@@ -1,7 +1,13 @@
 <?php
 
 return [
-    "db"=>[
+    "db_local"=>[
+        "host"=>"",
+        "name"=>"",
+        "user"=>"",
+        "password"=>""
+    ],
+    "db_remote"=>[
         "host"=>"",
         "name"=>"",
         "user"=>"",
