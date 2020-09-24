@@ -1,6 +1,6 @@
 <?php
 
-use App\Core\Application;
+use App\Application;
 use App\Core\Routing\Router;
 use App\Core\Request\Request;
 

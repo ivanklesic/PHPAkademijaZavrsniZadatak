@@ -8,18 +8,17 @@ use polaznik23;
 create table user (
                        id int auto_increment primary key not null,
                        email varchar(255) not null unique,
-                       first_name varchar(255) not null,
-                       last_name varchar(255) not null,
-                       password varchar(255) not null,
-                       image_url varchar(255) default null,
+                       firstname varchar(255) not null,
+                       lastname varchar(255) not null,
+                       pass varchar(255) not null,
+                       imageurl varchar(255) default null,
                        deleted tinyint default null,
                        roles json not null,
-                       cpu_freq float default null,
-                       cpu_cores int default null,
-                       gpu_vram int default null,
+                       cpufreq float default null,
+                       cpucores int default null,
+                       gpuvram int default null,
                        ram int default null,
                        storage int default null
-
 );
 
 create table genre(
@@ -31,48 +30,49 @@ create table genre(
 create table game(
                       id int auto_increment primary key not null,
                       name varchar(255) unique,
-                      release_date date not null,
-                      total_ratings_sum int default 0,
-                      total_ratings_count int default 0,
+                      releasedate date not null,
+                      totalratingssum int default 0,
+                      totalratingscount int default 0,
                       deleted tinyint default null,
-                      image_url varchar(255) default null,
-                      cpu_freq float default null,
-                      cpu_cores int default null,
-                      gpu_vram int default null,
-                      ram int default null,
-                      storage int default null
+                      imageurl varchar(255) default null,
+                      cpufreq float not null,
+                      cpucores int not null,
+                      gpuvram int not null,
+                      ram int not null,
+                      storage int not null
 );
 
 create table game_genre(
                             id int auto_increment primary key not null,
-                            game_id int,
-                            genre_id int,
-                            FOREIGN KEY (game_id) REFERENCES game(id)
+                            gameid int,
+                            genreid int,
+                            FOREIGN KEY (gameid) REFERENCES game(id)
                                 on delete restrict,
-                            FOREIGN KEY (genre_id) REFERENCES genre(id)
+                            FOREIGN KEY (genreid) REFERENCES genre(id)
                                 on delete restrict
 );
 
 create table user_genre(
                            id int auto_increment primary key not null,
-                           user_id int,
-                           genre_id int,
-                           FOREIGN KEY (user_id) REFERENCES user(id)
+                           userid int,
+                           genreid int,
+                           FOREIGN KEY (userid) REFERENCES user(id)
                                on delete restrict,
-                           FOREIGN KEY (genre_id) REFERENCES genre(id)
+                           FOREIGN KEY (genreid) REFERENCES genre(id)
                                on delete restrict
 );
 
 create table review(
                          id int auto_increment primary key not null,
-                         user_id int not null,
-                         game_id int not null,
+                         userid int not null,
+                         gameid int not null,
                          rating int not null,
+                         deleted tinyint default null,
                          title varchar(255) not null,
-                         review_text text default null,
-                         FOREIGN KEY (game_id) REFERENCES game(id)
+                         reviewtext text not null,
+                         FOREIGN KEY (gameid) REFERENCES game(id)
                              on delete restrict,
-                         FOREIGN KEY (user_id) REFERENCES user(id)
+                         FOREIGN KEY (userid) REFERENCES user(id)
                              on delete restrict
 
 );
@@ -81,22 +81,22 @@ create trigger update_rating_on_insert
     after insert on review
     for each row
     update game
-    SET total_ratings_count = total_ratings_count + 1,
-        total_ratings_sum = total_ratings_sum + NEW.rating
-    WHERE id = NEW.game_id;
+    SET totalratingscount = totalratingscount + 1,
+        totalratingssum = totalratingssum + NEW.rating
+    WHERE id = NEW.gameid;
 
 create trigger update_rating_on_delete
     before delete on review
     for each row
     update game
-    SET total_ratings_count = total_ratings_count - 1,
-        total_ratings_sum = total_ratings_sum - OLD.rating
-    WHERE id = OLD.game_id;
+    SET totalratingscount = totalratingscount - 1,
+        totalratingssum = totalratingssum - OLD.rating
+    WHERE id = OLD.gameid;
 
 create trigger update_rating_on_update
     after update on review
     for each row
     update game
-    SET total_ratings_sum = total_ratings_sum - OLD.rating,
-        total_ratings_sum = total_ratings_sum + NEW.rating
-    WHERE id = NEW.game_id;
+    SET totalratingssum = totalratingssum - OLD.rating,
+        totalratingssum = totalratingssum + NEW.rating
+    WHERE id = NEW.gameid;

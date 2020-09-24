@@ -5,6 +5,7 @@ namespace App\Core\Routing;
 
 use App\Core\Exception\RouterException;
 use App\Core\Request\RequestInterface;
+use Exception;
 
 class Router implements RouterInterface
 {
@@ -15,6 +16,8 @@ class Router implements RouterInterface
         "GET",
         "POST"
     );
+    public const REQUIRES_PARAMETER = ['details'];
+
     public function __construct(RequestInterface $request)
     {
         $this->request = $request;
@@ -24,13 +27,20 @@ class Router implements RouterInterface
     {
         throw new RouterException("{$path} is not a valid URL");
     }
+
     private function missingControllerHandler($controller)
     {
         throw new RouterException("{$controller} doesn't exist");
     }
+
     private function missingActionHandler($controller, $action)
     {
         throw new RouterException("{$action} doesn't exist in {$controller}");
+    }
+
+    private function invalidMethodHandler()
+    {
+        throw new RouterException("{$this->request->serverProtocol} 405 Method Not Allowed");
     }
 
     public function getRequest()
@@ -40,6 +50,10 @@ class Router implements RouterInterface
 
     public function matchRoute($path)
     {
+        if(!in_array($this->request->requestMethod, $this->supportedHttpMethods))
+        {
+            $this->invalidMethodHandler();
+        }
         $path = trim($path, '/');
         $path = str_replace(self::URL_SUFFIX, '', $path);
         $parts = $path ? explode('/', $path) : [];
@@ -57,18 +71,33 @@ class Router implements RouterInterface
         $this->dispatch($controllerClassName, $method, $argument);
     }
 
-    public function dispatch($controller, $action, $argument)
+    public function dispatch($controller, $action, $argument = null)
     {
         if(!class_exists($controller))
         {
             $this->missingControllerHandler($controller);
         }
+
+        $controllerObject = new $controller();
+
         if(!method_exists($controller, $action))
         {
             $this->missingActionHandler($controller, $action);
         }
-        $controllerObject = new $controller();
 
-        return $argument ? $controllerObject->$action($argument) : $controllerObject->$action();
+        if(isset($argument) && is_int($argument))
+        {
+            try
+            {
+                return $controllerObject->$action($argument);
+            }
+            catch(Exception $e)
+            {
+                echo $e;
+            }
+        }
+
+
+        return $controllerObject->$action();
     }
 }
