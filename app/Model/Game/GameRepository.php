@@ -9,11 +9,12 @@ use App\Core\Model\RepositoryInterface;
 
 class GameRepository implements RepositoryInterface
 {
-    public function getList()
+    public function getList($all = false)
     {
         $list = [];
         $db = Database::getInstance();
-        $statement = $db->prepare("select * from game where not deleted");
+        $countDeleted = $all ? '' : 'where not deleted';
+        $statement = $db->prepare('select * from game ' . $countDeleted);
         $statement->execute();
         foreach ($statement->fetchAll() as $game) {
             $list[] = new Game([
@@ -22,21 +23,21 @@ class GameRepository implements RepositoryInterface
                 'releasedate' => $game->releasedate,
                 'totalratingssum' => $game->totalratingssum,
                 'totalratingscount' => $game->totalratingscount,
-                'imageurl' => $game->imageurl,
                 'cpufreq' => $game->cpufreq,
                 'cpucores' => $game->cpucores,
                 'gpuvram' => $game->gpuvram,
                 'ram' => $game->ram,
-                'storage' => $game->storage
+                'storagespace' => $game->storagespace
             ]);
         }
         return $list;
     }
 
-    public function propertyExists($key, $value)
+    public function propertyExists($key, $value, $all = false)
     {
         $db = Database::getInstance();
-        $statement = $db->prepare('select id from game where not deleted and '.$key.' = (?)', [$value]);
+        $countDeleted = $all ? '' : 'not deleted and ';
+        $statement = $db->prepare('select id from game where '. $countDeleted . $key .' = (?)', [$value]);
         $statement->execute([
             $value
         ]);
@@ -44,11 +45,12 @@ class GameRepository implements RepositoryInterface
         return (bool)$fetched;
     }
 
-    public function findOneBy($key, $value)
+    public function findOneBy($key, $value, $all = false)
     {
-        $game = false;
+        $game = null;
         $db = Database::getInstance();
-        $statement = $db->prepare('select * from game where not deleted and '.$key.' = (?) ', [$value]);
+        $countDeleted = $all ? '' : 'not deleted and ';
+        $statement = $db->prepare('select * from game where '. $countDeleted . $key .' = (?) ', [$value]);
         $statement->execute([
             $value
         ]);
@@ -59,12 +61,11 @@ class GameRepository implements RepositoryInterface
                 'releasedate' => $game->releasedate,
                 'totalratingssum' => $game->totalratingssum,
                 'totalratingscount' => $game->totalratingscount,
-                'imageurl' => $game->imageurl,
                 'cpufreq' => $game->cpufreq,
                 'cpucores' => $game->cpucores,
                 'gpuvram' => $game->gpuvram,
                 'ram' => $game->ram,
-                'storage' => $game->storage
+                'storagespace' => $game->storagespace
             ]);
         }
         return $game;

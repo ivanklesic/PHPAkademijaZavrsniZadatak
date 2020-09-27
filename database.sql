@@ -18,7 +18,7 @@ create table user (
                        cpucores int default null,
                        gpuvram int default null,
                        ram int default null,
-                       storage int default null
+                       storagespace int default null
 );
 
 create table genre(
@@ -34,47 +34,44 @@ create table game(
                       totalratingssum int default 0,
                       totalratingscount int default 0,
                       deleted tinyint default null,
-                      imageurl varchar(255) default null,
                       cpufreq float not null,
                       cpucores int not null,
                       gpuvram int not null,
                       ram int not null,
-                      storage int not null
+                      storagespace int not null
 );
 
 create table game_genre(
                             id int auto_increment primary key not null,
-                            gameid int,
-                            genreid int,
-                            FOREIGN KEY (gameid) REFERENCES game(id)
+                            gameID int not null,
+                            genreID int not null,
+                            FOREIGN KEY (gameID) REFERENCES game(id)
                                 on delete restrict,
-                            FOREIGN KEY (genreid) REFERENCES genre(id)
+                            FOREIGN KEY (genreID) REFERENCES genre(id)
                                 on delete restrict
 );
 
 create table user_genre(
                            id int auto_increment primary key not null,
-                           userid int,
-                           genreid int,
-                           FOREIGN KEY (userid) REFERENCES user(id)
+                           userID int not null,
+                           genreID int not null,
+                           FOREIGN KEY (userID) REFERENCES user(id)
                                on delete restrict,
-                           FOREIGN KEY (genreid) REFERENCES genre(id)
+                           FOREIGN KEY (genreID) REFERENCES genre(id)
                                on delete restrict
 );
 
 create table review(
                          id int auto_increment primary key not null,
-                         userid int not null,
-                         gameid int not null,
+                         userID int not null,
+                         gameID int not null,
                          rating int not null,
-                         deleted tinyint default null,
                          title varchar(255) not null,
                          reviewtext text not null,
-                         FOREIGN KEY (gameid) REFERENCES game(id)
+                         FOREIGN KEY (gameID) REFERENCES game(id)
                              on delete restrict,
-                         FOREIGN KEY (userid) REFERENCES user(id)
+                         FOREIGN KEY (userID) REFERENCES user(id)
                              on delete restrict
-
 );
 
 create trigger update_rating_on_insert
@@ -83,7 +80,7 @@ create trigger update_rating_on_insert
     update game
     SET totalratingscount = totalratingscount + 1,
         totalratingssum = totalratingssum + NEW.rating
-    WHERE id = NEW.gameid;
+    WHERE id = NEW.gameID;
 
 create trigger update_rating_on_delete
     before delete on review
@@ -91,7 +88,7 @@ create trigger update_rating_on_delete
     update game
     SET totalratingscount = totalratingscount - 1,
         totalratingssum = totalratingssum - OLD.rating
-    WHERE id = OLD.gameid;
+    WHERE id = OLD.gameID;
 
 create trigger update_rating_on_update
     after update on review
@@ -99,4 +96,4 @@ create trigger update_rating_on_update
     update game
     SET totalratingssum = totalratingssum - OLD.rating,
         totalratingssum = totalratingssum + NEW.rating
-    WHERE id = NEW.gameid;
+    WHERE id = NEW.gameID;

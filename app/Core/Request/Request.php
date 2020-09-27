@@ -53,6 +53,7 @@ class Request implements RequestInterface
 
             return $body;
         }
+        return null;
     }
 
 }

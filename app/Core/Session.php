@@ -5,15 +5,18 @@ namespace App\Core;
 
 
 use App\Core\Data\DataObject;
+use App\Model\User\UserRepository;
 
 class Session extends DataObject
 {
     private static $instance;
+    private $userRepository;
 
     public function __construct(array $data = [])
     {
         parent::__construct($data);
         $this->start();
+        $this->userRepository = new UserRepository();
     }
 
     public function __set($key, $value)
@@ -53,14 +56,24 @@ class Session extends DataObject
 
     public function isLoggedIn()
     {
-        return isset($_SESSION['is_logged_in']);
+        return isset($_SESSION['user']);
     }
 
     public function logout()
     {
-        // unset session object, redirect to homepage
         unset($_SESSION['user']);
         session_destroy();
+    }
+
+    public function getUser()
+    {
+        return $this->isLoggedIn() ? $this->userRepository->findOneBy('id', $_SESSION['user']) : null;
+    }
+
+    public function setUser($user)
+    {
+        $_SESSION['user'] = $user->id;
+        return;
     }
 
 }

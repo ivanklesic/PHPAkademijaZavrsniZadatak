@@ -9,11 +9,12 @@ use App\Core\Model\RepositoryInterface;
 
 class UserRepository implements RepositoryInterface
 {
-    public function getList()
+    public function getList($all = false)
     {
         $list = [];
         $db = Database::getInstance();
-        $statement = $db->prepare("select * from user where not deleted");
+        $countDeleted = $all ? '' : 'where not deleted';
+        $statement = $db->prepare('select * from user ' . $countDeleted);
         $statement->execute();
         foreach ($statement->fetchAll() as $user) {
             $list[] = new User([
@@ -26,16 +27,17 @@ class UserRepository implements RepositoryInterface
                 'cpucores' => $user->cpucores,
                 'gpuvram' => $user->gpuvram,
                 'ram' => $user->ram,
-                'storage' => $user->storage
+                'storagespace' => $user->storagespace
             ]);
         }
         return $list;
     }
 
-    public function propertyExists($key, $value)
+    public function propertyExists($key, $value, $all = false)
     {
         $db = Database::getInstance();
-        $statement = $db->prepare('select id from user where not deleted and '.$key.' = (?)', [$value]);
+        $countDeleted = $all ? '' : 'not deleted and ';
+        $statement = $db->prepare('select id from user where '. $countDeleted . $key .' = (?)', [$value]);
         $statement->execute([
             $key
         ]);
@@ -43,11 +45,12 @@ class UserRepository implements RepositoryInterface
         return (bool)$fetched;
     }
 
-    public function findOneBy($key, $value, $findOne = null)
+    public function findOneBy($key, $value, $all = false)
     {
         $user = false;
         $db = Database::getInstance();
-        $statement = $db->prepare('select * from user where not deleted and '.$key.' = (?) ', [$value]);
+        $countDeleted = $all ? '' : 'not deleted and ';
+        $statement = $db->prepare('select * from user where '. $countDeleted . $key .' = (?) ', [$value]);
         $statement->execute([
             $value
         ]);
@@ -62,7 +65,7 @@ class UserRepository implements RepositoryInterface
                 'cpucores' => $user->cpucores,
                 'gpuvram' => $user->gpuvram,
                 'ram' => $user->ram,
-                'storage' => $user->storage
+                'storagespace' => $user->storagespace
             ]);
         }
         return $user;

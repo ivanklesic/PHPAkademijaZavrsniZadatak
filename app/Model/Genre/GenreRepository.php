@@ -9,11 +9,12 @@ use App\Core\Model\RepositoryInterface;
 
 class GenreRepository implements RepositoryInterface
 {
-    public function getList()
+    public function getList($all = false)
     {
         $list = [];
         $db = Database::getInstance();
-        $statement = $db->prepare("select * from genre where not deleted");
+        $countDeleted = $all ? '' : 'where not deleted';
+        $statement = $db->prepare('select * from genre ' . $countDeleted);
         $statement->execute();
         foreach ($statement->fetchAll() as $genre) {
             $list[] = new Genre([
@@ -24,10 +25,11 @@ class GenreRepository implements RepositoryInterface
         return $list;
     }
 
-    public function propertyExists($key, $value)
+    public function propertyExists($key, $value, $all = false)
     {
         $db = Database::getInstance();
-        $statement = $db->prepare('select id from genre where not deleted and '.$key.' = (?)', [$value]);
+        $countDeleted = $all ? '' : 'not deleted and ';
+        $statement = $db->prepare('select id from genre where '. $countDeleted . $key .' = (?)', [$value]);
         $statement->execute([
             $value
         ]);
@@ -35,11 +37,12 @@ class GenreRepository implements RepositoryInterface
         return (bool)$fetched;
     }
 
-    public function findOneBy($key, $value)
+    public function findOneBy($key, $value, $all = false)
     {
         $genre = false;
         $db = Database::getInstance();
-        $statement = $db->prepare('select * from genre where not deleted and '.$key.' = (?) ', [$value]);
+        $countDeleted = $all ? '' : 'not deleted and ';
+        $statement = $db->prepare('select * from genre where '. $countDeleted . $key .' = (?) ', [$value]);
         $statement->execute([
             $value
         ]);

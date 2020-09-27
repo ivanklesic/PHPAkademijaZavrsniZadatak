@@ -16,7 +16,6 @@ class Router implements RouterInterface
         "GET",
         "POST"
     );
-    public const REQUIRES_PARAMETER = ['details'];
 
     public function __construct(RequestInterface $request)
     {
@@ -93,11 +92,8 @@ class Router implements RouterInterface
             }
             catch(Exception $e)
             {
-                echo $e;
             }
         }
-
-
         return $controllerObject->$action();
     }
 }
