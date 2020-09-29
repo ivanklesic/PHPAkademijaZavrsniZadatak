@@ -24,23 +24,22 @@ class AbstractController
 
     public function denyAccessUnlessGranted($role)
     {
-        if($this->session->getUser())
+        if($this->session->getCurrentUser())
         {
-            if(in_array($role, json_decode($this->session->getUser()->getRoles())))
+            if(in_array($role, explode(',',$this->session->getCurrentUser()->getRoles())))
             {
                 return;
             }
         }
 
-        $url = Config::get('url_local') . 'home/index';
-        header('Location: ' . $url);
+        header('Location: /');
     }
 
     public function isGranted($role)
     {
-        if($this->session->getUser())
+        if($this->session->getCurrentUser())
         {
-            if(in_array($role, $this->session->getUser()->getRoles()))
+            if(in_array($role, explode(',',$this->session->getCurrentUser()->getRoles())))
             {
                 return true;
             }

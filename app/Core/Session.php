@@ -56,24 +56,37 @@ class Session extends DataObject
 
     public function isLoggedIn()
     {
-        return isset($_SESSION['user']);
+        return isset($_SESSION['user_id']);
     }
 
     public function logout()
     {
-        unset($_SESSION['user']);
+        unset($_SESSION['user_id']);
         session_destroy();
     }
 
-    public function getUser()
+    public function getCurrentUser()
     {
-        return $this->isLoggedIn() ? $this->userRepository->findOneBy('id', $_SESSION['user']) : null;
+        return $this->isLoggedIn() ? $this->userRepository->findOneBy('id', $_SESSION['user_id']) : null;
     }
 
     public function setUser($user)
     {
-        $_SESSION['user'] = $user->id;
+        $_SESSION['user_id'] = $user->id ?? null;
         return;
+    }
+
+    public function isGranted($role)
+    {
+        if($this->getCurrentUser())
+        {
+            if(in_array($role, explode(',',$this->getCurrentUser()->getRoles())))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

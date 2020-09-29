@@ -40,7 +40,7 @@ class GenreResource implements ResourceInterface
             'UPDATE genre SET deleted = (:delete) WHERE id = (:id)'
         );
         $statement->bindValue('id', $id);
-        $statement->bindValue('deleted', $delete);
+        $statement->bindValue('delete', $delete);
 
         return $statement->execute();
     }

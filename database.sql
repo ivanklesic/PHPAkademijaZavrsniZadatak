@@ -5,15 +5,15 @@ alter database polaznik23 character set utf8mb4 collate utf8mb4_unicode_ci;
 
 use polaznik23;
 
-create table user (
+create table user(
                        id int auto_increment primary key not null,
-                       email varchar(255) not null unique,
-                       firstname varchar(255) not null,
-                       lastname varchar(255) not null,
-                       pass varchar(255) not null,
-                       imageurl varchar(255) default null,
-                       deleted tinyint default null,
-                       roles json not null,
+                       email varchar(100) not null unique,
+                       firstname varchar(100) not null,
+                       lastname varchar(100) not null,
+                       pass varchar(100) not null,
+                       imageurl varchar(100) default null,
+                       deleted tinyint default 0,
+                       roles varchar(100) not null,
                        cpufreq float default null,
                        cpucores int default null,
                        gpuvram int default null,
@@ -23,17 +23,17 @@ create table user (
 
 create table genre(
                          id int auto_increment primary key not null,
-                         name varchar(255) not null unique,
-                         deleted tinyint default null
+                         name varchar(100) not null unique,
+                         deleted tinyint default 0
 );
 
 create table game(
                       id int auto_increment primary key not null,
-                      name varchar(255) unique,
+                      name varchar(100) unique,
                       releasedate date not null,
                       totalratingssum int default 0,
                       totalratingscount int default 0,
-                      deleted tinyint default null,
+                      deleted tinyint default 0,
                       cpufreq float not null,
                       cpucores int not null,
                       gpuvram int not null,
@@ -74,6 +74,8 @@ create table review(
                              on delete restrict
 );
 
+ALTER TABLE review ADD UNIQUE unique_index (userID, gameID);
+
 create trigger update_rating_on_insert
     after insert on review
     for each row
@@ -97,3 +99,5 @@ create trigger update_rating_on_update
     SET totalratingssum = totalratingssum - OLD.rating,
         totalratingssum = totalratingssum + NEW.rating
     WHERE id = NEW.gameID;
+
+insert into user (firstname, lastname, email, pass, roles) values ('Admin', 'Admin', 'admin@admin.com', '$2y$10$MkCtNDV4iBI4ySwOiqTIA.HOd55UjDo2b9ibVmq4dkQXqSKPl3aLq','ROLE_USER,ROLE_ADMIN')

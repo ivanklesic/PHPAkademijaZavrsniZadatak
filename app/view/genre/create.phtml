@@ -1,0 +1,11 @@
+<form action="<?php if($edit): echo '/genre/editPost/' . $genre->id; else: echo '/genre/createPost/'; endif; ?>" method="post">
+    <div class="container">
+        <h1>Add a new genre</h1>
+        <h5>Required</h5>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" name="name" value="<?php if($edit): echo htmlspecialchars($genre->name); endif;?>" placeholder="Name">
+            <br>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>

@@ -3,18 +3,20 @@
 
 namespace App\Controller;
 
-use App\Core\Controller\AbstractController;
-use App\Core\Config;
+use App\Core\Controller\AbstractController ;
 use App\Model\Game;
+use App\Model\Genre;
 
 class GameController extends AbstractController
 {
     private $gameRepository;
+    private $genreRepository;
     private $gameResource;
 
     public function __construct()
     {
         $this->gameRepository = new Game\GameRepository();
+        $this->genreRepository = new Genre\GenreRepository();
         $this->gameResource = new Game\GameResource();
         parent::__construct();
     }
@@ -23,8 +25,9 @@ class GameController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $this->view->render('createGame', [
-            'session' => $this->session
+        $this->view->render('game/create', [
+            'genres' => $this->genreRepository->getList(),
+            'edit' => false
         ]);
     }
 
@@ -36,12 +39,13 @@ class GameController extends AbstractController
         $name = $postData['name'];
         $releaseDate = $postData['releasedate'];
         $cpuFreq = $postData['cpufreq'];
+        $genres = $postData['genres'];
         $cpuCores = $postData['cpucores'];
         $gpuVram = $postData['gpuvram'];
         $ram = $postData['ram'];
         $storageSpace = $postData['storagespace'];
 
-        if (!$name || !$releaseDate || !$cpuFreq || !$cpuCores || !$gpuVram || !$ram || !$storageSpace) {
+        if (!$name || !$releaseDate || !$cpuFreq || !$cpuCores || !$gpuVram || !$ram || !$storageSpace || empty($genres)) {
             return;
         }
 
@@ -55,7 +59,17 @@ class GameController extends AbstractController
             return;
         }
 
-        $url = Config::get('url_local') . 'game/list/';
+        $game = $this->gameRepository->findOneBy('name',$name);
+
+        foreach($postData['genres'] as $genreID)
+        {
+            $result = $this->gameResource->insertGenre($genreID, $game->getId());
+            if (!$result) {
+                return;
+            }
+        }
+
+        $url = '/game/list/';
         header('Location: ' . $url);
     }
 
@@ -70,9 +84,11 @@ class GameController extends AbstractController
             return;
         }
 
-        $this->view->render('gameEdit', [
+        $this->view->render('game/create', [
             'game' => $game,
-            'session' => $this->session
+            'genres' => $this->genreRepository->getList(),
+            'edit' => true,
+            'gameGenres' => $this->gameRepository->findGenreIDs($game->getId())
         ]);
     }
 
@@ -90,13 +106,14 @@ class GameController extends AbstractController
         $postData = $this->request->getBody();
         $name = $postData['name'];
         $releaseDate = $postData['releasedate'];
+        $genres = $postData['genres'];
         $cpuFreq = $postData['cpufreq'];
         $cpuCores = $postData['cpucores'];
         $gpuVram = $postData['gpuvram'];
         $ram = $postData['ram'];
         $storageSpace = $postData['storagespace'];
 
-        if (!$name || !$releaseDate || !$cpuFreq || !$cpuCores || !$gpuVram || !$ram || !$storageSpace) {
+        if (!$name || !$releaseDate || !$cpuFreq || !$cpuCores || !$gpuVram || !$ram || !$storageSpace || empty($genres)) {
             return;
         }
 
@@ -106,7 +123,16 @@ class GameController extends AbstractController
             return;
         }
 
-        $url = Config::get('url_local') . 'game/list/';
+        $this->gameResource->resetGenres($game->getId());
+        foreach($postData['genres'] as $genreID)
+        {
+            $result = $this->gameResource->insertGenre($genreID, $game->getId());
+            if (!$result) {
+                return;
+            }
+        }
+
+        $url = '/game/list/';
         header('Location: ' . $url);
     }
 
@@ -127,7 +153,7 @@ class GameController extends AbstractController
             return;
         }
 
-        $url = Config::get('url_local') . 'game/list/';
+        $url = '/game/list/';
         header('Location: ' . $url);
     }
 
@@ -135,7 +161,7 @@ class GameController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $game = $this->gameRepository->findOneBy('id', $id);
+        $game = $this->gameRepository->findOneBy('id', $id, true);
 
         if(!$game)
         {
@@ -148,11 +174,11 @@ class GameController extends AbstractController
             return;
         }
 
-        $url = Config::get('url_local') . 'game/list/';
+        $url = '/game/list/';
         header('Location: ' . $url);
     }
 
-    public function detailsAction($id)
+    public function detailAction($id)
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
@@ -163,9 +189,10 @@ class GameController extends AbstractController
             return;
         }
 
-        $this->view->render('gameDetails', [
-            'game' => $game,
-            'session' => $this->session
+        $game->setGenres($this->gameRepository->findGenreNames($game->getID()));
+
+        $this->view->render('game/detail', [
+            'game' => $game
         ]);
     }
 
@@ -173,16 +200,14 @@ class GameController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
-        $games = $this->isGranted('ROLE_ADMIN') ? $this->gameRepository->getList(true) : $this->gameRepository->getList();
-
-        if(!$games)
+        $games = $this->gameRepository->getList(true);
+        foreach($games as $game)
         {
-            return;
+            $game->setGenres($this->gameRepository->findGenreNames($game->getID()));
         }
 
-        $this->view->render('gameList', [
-            'games' => $games,
-            'session' => $this->session
+        $this->view->render('game/list', [
+            'games' => $games
         ]);
     }
 }

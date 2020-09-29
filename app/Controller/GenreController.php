@@ -5,7 +5,6 @@ namespace App\Controller;
 
 
 use App\Core\Controller\AbstractController;
-use App\Core\Config;
 use App\Model\Genre;
 
 class GenreController extends AbstractController
@@ -24,8 +23,8 @@ class GenreController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $this->view->render('createGenre', [
-            'session' => $this->session
+        $this->view->render('genre/create', [
+            'edit' => false
         ]);
     }
 
@@ -50,7 +49,7 @@ class GenreController extends AbstractController
             return;
         }
 
-        $url = Config::get('url_local') . 'genre/list/';
+        $url = '/genre/list/';
         header('Location: ' . $url);
     }
 
@@ -65,9 +64,9 @@ class GenreController extends AbstractController
             return;
         }
 
-        $this->view->render('genreEdit', [
+        $this->view->render('genre/create', [
             'genre' => $genre,
-            'session' => $this->session
+            'edit' => true
         ]);
     }
 
@@ -95,7 +94,7 @@ class GenreController extends AbstractController
             return;
         }
 
-        $url = Config::get('url_local') . 'genre/list/';
+        $url = '/genre/list/';
         header('Location: ' . $url);
     }
 
@@ -116,7 +115,7 @@ class GenreController extends AbstractController
             return;
         }
 
-        $url = Config::get('url_local') . 'genre/list/';
+        $url = '/genre/list/';
         header('Location: ' . $url);
     }
 
@@ -124,7 +123,7 @@ class GenreController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $genre = $this->genreRepository->findOneBy('id', $id);
+        $genre = $this->genreRepository->findOneBy('id', $id, true);
 
         if(!$genre)
         {
@@ -137,7 +136,7 @@ class GenreController extends AbstractController
             return;
         }
 
-        $url = Config::get('url_local') . 'genre/list/';
+        $url = '/genre/list/';
         header('Location: ' . $url);
     }
 
@@ -145,16 +144,10 @@ class GenreController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
-        $genres = $this->isGranted('ROLE_ADMIN') ? $this->genreRepository->getList(true) : $this->genreRepository->getList();
+        $genres = $this->genreRepository->getList(true);
 
-        if(!$genres)
-        {
-            return;
-        }
-
-        $this->view->render('genreList', [
-            'genres' => $genres,
-            'session' => $this->session
+        $this->view->render('genre/list', [
+            'genres' => $genres
         ]);
     }
 

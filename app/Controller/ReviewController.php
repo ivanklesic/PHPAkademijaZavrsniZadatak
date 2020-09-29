@@ -4,7 +4,6 @@
 namespace App\Controller;
 
 use App\Core\Controller\AbstractController;
-use App\Core\Config;
 use App\Model\Review;
 use App\Model\Game;
 
@@ -13,7 +12,6 @@ class ReviewController extends AbstractController
     private $reviewRepository;
     private $gameRepository;
     private $reviewResource;
-
 
     public function __construct()
     {
@@ -35,12 +33,11 @@ class ReviewController extends AbstractController
         }
 
         $this->view->render('createReview', [
-            'session' => $this->session,
             'game' => $game
         ]);
     }
 
-    public function createPostAction()
+    public function createPostAction($gameID)
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
@@ -65,7 +62,7 @@ class ReviewController extends AbstractController
             return;
         }
 
-        $url = Config::get('url_local') . 'review/list/' . $gameID;
+        $url = '/review/list/' . $gameID;
         header('Location: ' . $url);
     }
 
@@ -80,14 +77,13 @@ class ReviewController extends AbstractController
             return;
         }
 
-        if($this->session->getUser()->getId() !== $review->getUserID())
+        if($this->session->getCurrentUser()->getId() !== $review->getUserID())
         {
             return;
         }
 
         $this->view->render('reviewEdit', [
-            'review' => $review,
-            'session' => $this->session
+            'review' => $review
         ]);
     }
 
@@ -102,7 +98,7 @@ class ReviewController extends AbstractController
             return;
         }
 
-        if($this->session->getUser()->getId() !== $review->getUserID())
+        if($this->session->getCurrentUser()->getId() !== $review->getUserID())
         {
             return;
         }
@@ -122,7 +118,7 @@ class ReviewController extends AbstractController
             return;
         }
 
-        $url = Config::get('url_local') . 'review/details/' . $id;
+        $url = '/review/detail/' . $id;
         header('Location: ' . $url);
     }
 
@@ -137,22 +133,21 @@ class ReviewController extends AbstractController
             return;
         }
 
-        if($this->session->getUser()->getId() !== $review->getUserID())
+        if($this->session->getCurrentUser()->getId() !== $review->getUserID())
         {
             return;
         }
 
-        $result = $this->reviewResource->setDeleted($id);
+        $result = $this->reviewResource->delete($id);
 
         if (!$result) {
             return;
         }
 
-        $url = Config::get('url_local') . 'home/index/';
-        header('Location: ' . $url);
+        header('Location: /');
     }
 
-    public function detailsAction($id)
+    public function detailAction($id)
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
@@ -163,13 +158,12 @@ class ReviewController extends AbstractController
             return;
         }
 
-        $this->view->render('reviewDetails', [
-            'review' => $review,
-            'session' => $this->session
+        $this->view->render('review/detail', [
+            'review' => $review
         ]);
     }
 
-    public function listAction($gameID)
+    public function listAction($all = false)
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
@@ -187,10 +181,9 @@ class ReviewController extends AbstractController
             return;
         }
 
-        $this->view->render('reviewList', [
+        $this->view->render('review/list', [
             'reviews' => $reviews,
-            'game' => $game,
-            'session' => $this->session
+            'game' => $game
         ]);
     }
 

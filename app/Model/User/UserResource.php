@@ -16,17 +16,17 @@ class UserResource implements ResourceInterface
             'INSERT into user (firstname, lastname, email, pass, imageurl, roles, cpufreq, cpucores, gpuvram, ram, storagespace)
                     values (:firstname, :lastname, :email, :password, :imageurl, :roles, :cpufreq, :cpucores, :gpuvram, :ram, :storagespace)'
         );
-        $roles = ['ROLE_USER'];
+        $roles = 'ROLE_USER';
         if($admin)
         {
-            $roles[] = 'ROLE_ADMIN';
+            $roles .= ',ROLE_ADMIN';
         }
         $statement->bindValue('firstname', $data['firstname']);
         $statement->bindValue('lastname', $data['lastname']);
         $statement->bindValue('email', $data['email']);
         $statement->bindValue('password', password_hash($data['pass'], PASSWORD_DEFAULT));
         $statement->bindValue('imageurl', $data['imageurl'] ?? null);
-        $statement->bindValue('roles', json_encode($roles));
+        $statement->bindValue('roles', $roles);
         $statement->bindValue('cpufreq', $data['cpufreq'] ?? null);
         $statement->bindValue('cpucores', $data['cpucores'] ?? null);
         $statement->bindValue('gpuvram', $data['gpuvram'] ?? null);
@@ -65,6 +65,30 @@ class UserResource implements ResourceInterface
         );
         $statement->bindValue('id', $id);
         $statement->bindValue('deleted', $delete);
+
+        return $statement->execute();
+    }
+
+    public function insertGenre($genreID, $userID)
+    {
+        $db = Database::getInstance();
+        $statement = $db->prepare(
+            'INSERT into user_genre (userID, genreID)
+                    values (:userID, :genreID)'
+        );
+        $statement->bindValue('userID', $userID);
+        $statement->bindValue('genreID', $genreID);
+
+        return $statement->execute();
+    }
+
+    public function resetGenres($userID)
+    {
+        $db = Database::getInstance();
+        $statement = $db->prepare(
+            'DELETE from user_genre where userID = (:userID)'
+        );
+        $statement->bindValue('userID', $userID);
 
         return $statement->execute();
     }

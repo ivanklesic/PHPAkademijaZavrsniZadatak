@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.4/b-html5-1.5.4/datatables.min.css"/>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.4/b-html5-1.5.4/datatables.min.js"></script>
+    <title>PHP Academy Zavrsni zadatak</title>
+</head>
+<body style="margin-bottom:80px; background-image: linear-gradient(120deg, #a1c4fd 50%, #c2e9fb 100%);">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+            <?php if($this->session->isGranted('ROLE_USER')): ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="/home/index">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/review/list/<?php echo $this->session->getCurrentUser()->id ?>">My reviews</a>
+                </li>
+            <?php endif ?>
+            <?php if($this->session->isGranted('ROLE_ADMIN')): ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="/game/list">Games</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/genre/list">Genres</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/list">Users</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/review/list">Reviews</a>
+                </li>
+            <?php endif ?>
+        </ul>
+
+        <ul class="navbar-nav navbar-right">
+            <?php if($this->session->isGranted('ROLE_USER')): ?>
+                <li class="nav-link">
+                    Currently logged in as: <?php echo htmlspecialchars($this->session->getCurrentUser()->getFirstname()) . ' ' . htmlspecialchars($this->session->getCurrentUser()->getLastname()) ?>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href='/user/edit/<?php echo $this->session->user_id?>'>Edit profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/logout">Logout</a>
+                </li>
+            <?php else: ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/register">Register</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/login">Login</a>
+                </li>
+            <?php endif ?>
+        </ul>
+    </div>
+</nav>
+<div class="container">
+    <?= $content ?>
+</div>
+</body>
+</html>

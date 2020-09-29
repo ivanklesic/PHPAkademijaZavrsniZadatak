@@ -53,7 +53,31 @@ class GameResource implements ResourceInterface
             'UPDATE game SET deleted = (:delete) WHERE id = (:id)'
         );
         $statement->bindValue('id', $id);
-        $statement->bindValue('deleted', $delete);
+        $statement->bindValue('delete', $delete);
+
+        return $statement->execute();
+    }
+
+    public function insertGenre($genreID, $gameID)
+    {
+        $db = Database::getInstance();
+        $statement = $db->prepare(
+            'INSERT into game_genre (gameID, genreID)
+                    values (:gameID, :genreID)'
+        );
+        $statement->bindValue('gameID', $gameID);
+        $statement->bindValue('genreID', $genreID);
+
+        return $statement->execute();
+    }
+
+    public function resetGenres($gameID)
+    {
+        $db = Database::getInstance();
+        $statement = $db->prepare(
+            'DELETE from game_genre where gameID = (:gameID)'
+        );
+        $statement->bindValue('gameID', $gameID);
 
         return $statement->execute();
     }

@@ -84,7 +84,7 @@ class Router implements RouterInterface
             $this->missingActionHandler($controller, $action);
         }
 
-        if(isset($argument) && is_int($argument))
+        if(isset($argument) && is_int((int)$argument))
         {
             try
             {

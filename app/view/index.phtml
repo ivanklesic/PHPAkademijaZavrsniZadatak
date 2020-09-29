@@ -1,0 +1,38 @@
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-lg-2">
+
+            <br>
+            <div class="list-group">
+                <?php foreach ($genres as $genre): ?>
+                <a href="/home/index/<?php echo $genre->id ?>" class="list-group-item"><?php echo htmlspecialchars($genre->name) ?></a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <div class="col-lg-10">
+            <br>
+            <div class="row">
+                <?php foreach ($games as $game): ?>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h4 class="card-title">
+                                <a href="/game/detail/<?php echo $game->id ?>"><?php echo htmlspecialchars($game->name) ?></a>
+                            </h4>
+                            <h5><?php $this->formatDate($game->releasedate) ?></h5>Average rating: <?php if($game->totalratingssum && $game->totalratingscount) {echo $game->totalratingssum/$game->totalratingscount;} else {echo 'N/A';} ?>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">
+                                <a href="/review/create/<?php echo $game->id ?>">Write a review for this game</a>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+</div>
+

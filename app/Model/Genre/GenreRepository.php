@@ -13,13 +13,14 @@ class GenreRepository implements RepositoryInterface
     {
         $list = [];
         $db = Database::getInstance();
-        $countDeleted = $all ? '' : 'where not deleted';
+        $countDeleted = $all ? '' : 'where deleted = 0';
         $statement = $db->prepare('select * from genre ' . $countDeleted);
         $statement->execute();
         foreach ($statement->fetchAll() as $genre) {
             $list[] = new Genre([
                 'id' => $genre->id,
                 'name' => $genre->name,
+                'deleted' => $genre->deleted
             ]);
         }
         return $list;
@@ -28,7 +29,7 @@ class GenreRepository implements RepositoryInterface
     public function propertyExists($key, $value, $all = false)
     {
         $db = Database::getInstance();
-        $countDeleted = $all ? '' : 'not deleted and ';
+        $countDeleted = $all ? '' : 'deleted = 0 and ';
         $statement = $db->prepare('select id from genre where '. $countDeleted . $key .' = (?)', [$value]);
         $statement->execute([
             $value
@@ -41,7 +42,7 @@ class GenreRepository implements RepositoryInterface
     {
         $genre = false;
         $db = Database::getInstance();
-        $countDeleted = $all ? '' : 'not deleted and ';
+        $countDeleted = $all ? '' : 'deleted = 0 and ';
         $statement = $db->prepare('select * from genre where '. $countDeleted . $key .' = (?) ', [$value]);
         $statement->execute([
             $value
@@ -50,6 +51,7 @@ class GenreRepository implements RepositoryInterface
             $genre = new Genre([
                 'id' => $genre->id,
                 'name' => $genre->name,
+                'deleted' => $genre->deleted
             ]);
         }
         return $genre;

@@ -22,7 +22,8 @@ class ReviewRepository implements RepositoryInterface
                 'gameid' => $review->gameid,
                 'rating' => $review->rating,
                 'title' => $review->title,
-                'reviewtext' => $review->reviewtext
+                'reviewtext' => $review->reviewtext,
+                'deleted' => $review->deleted
             ]);
         }
         return $list;
@@ -39,7 +40,7 @@ class ReviewRepository implements RepositoryInterface
         return (bool)$fetched;
     }
 
-    public function findOneBy($key, $value, $all = null)
+    public function findOneBy($key, $value, $all = false)
     {
         $review = false;
         $db = Database::getInstance();
@@ -54,13 +55,14 @@ class ReviewRepository implements RepositoryInterface
                 'gameid' => $review->gameid,
                 'rating' => $review->rating,
                 'title' => $review->title,
-                'reviewtext' => $review->reviewtext
+                'reviewtext' => $review->reviewtext,
+                'deleted' => $review->deleted
             ]);
         }
         return $review;
     }
 
-    public function findBy($key, $value)
+    public function findBy($key, $value, $all = false)
     {
         $list = [];
         $db = Database::getInstance();
@@ -75,11 +77,11 @@ class ReviewRepository implements RepositoryInterface
                 'gameid' => $review->gameid,
                 'rating' => $review->rating,
                 'title' => $review->title,
-                'reviewtext' => $review->reviewtext
+                'reviewtext' => $review->reviewtext,
+                'deleted' => $review->deleted
             ]);
         }
         return $list;
-
     }
 
 }

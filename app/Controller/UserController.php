@@ -3,42 +3,45 @@
 
 namespace App\Controller;
 
-use App\Core\Config;
-use App\Core\View;
-use App\Model\User;
 
+use App\Model\User;
+use App\Model\Genre;
 
 use App\Core\Controller\AbstractController;
 
 class UserController extends AbstractController
 {
     private $userRepository;
+    private $genreRepository;
     private $userResource;
 
     public function __construct()
     {
         $this->userRepository = new User\UserRepository();
+        $this->genreRepository = new Genre\GenreRepository();
         $this->userResource = new User\UserResource();
         parent::__construct();
     }
 
     public function loginAction()
     {
-        $this->view->render('login', [
-            'session' => $this->session
+        if ($this->session->isLoggedIn()) {
+            return;
+        }
+
+        $this->view->render('user/login', [
         ]);
     }
 
-    public function loginSubmitAction()
+    public function loginPostAction()
     {
-        $session = $this->session;
-        if ($session->getUser()) {
+        if ($this->session->isLoggedIn()) {
             return;
         }
 
         $postData = $this->request->getBody();
-        $email = $postData['email'];
-        $password = $postData['pass'];
+        $email = $postData['email'] ?? null;
+        $password = $postData['pass'] ?? null;
 
         if (!$email || !$password) {
             return;
@@ -50,51 +53,78 @@ class UserController extends AbstractController
             return;
         }
 
+        if ($user->deleted) {
+            return;
+        }
+
         $hash = $user->getPassword();
 
         if (!password_verify($password, $hash)) {
             return;
         }
 
-        $session->setUser($user);
+        $this->session->setUser($user);
 
-        $csrfToken = bin2hex(openssl_random_pseudo_bytes(24));
-        $session->setCsrfToken($csrfToken);
-        header('Location: ' . Config::get('url_local'));
+        $csrfToken = bin2hex(random_bytes(32));
+        $this->session->setCsrfToken($csrfToken);
+        header('Location: /');
     }
 
     public function logoutAction()
     {
         $this->session->logout();
-        header('Location: ' . Config::get('url_local'));
+        header('Location: /');
     }
 
     public function registerAction()
     {
         if ($this->session->isLoggedIn()) {
-            $url = Config::get('url_local');
-            header('Location: ' . $url);
+            header('Location: /');
         }
 
-        $this->view->render('register', [
-            'session' => $this->session
+        $this->view->render('user/register', [
+            'genres' => $this->genreRepository->getList(),
+            'edit' => false
         ]);
     }
 
     public function registerPostAction()
     {
+        if ($this->session->isLoggedIn()) {
+            header('Location: /');
+        }
+
         $postData = $this->request->getBody();
         $email = $postData['email'];
         $firstname = $postData['firstname'];
         $lastname = $postData['lastname'];
         $password = $postData['pass'];
+        $password2 = $postData['pass-r'];
 
         if (!$email || !$firstname || !$lastname || !$password) {
             return;
         }
 
+        if ($password != $password2) {
+            return;
+        }
+
         if($this->userRepository->propertyExists('email', $email)) {
             return;
+        }
+
+        if(!is_dir('upload')){
+            mkdir('upload');
+        }
+
+        if(isset($_FILES['file'])){
+            $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
+            $fileMimeType = finfo_file($fileInfo, $_FILES['file']['tmp_name']);
+            if (($fileMimeType == 'image/jpeg') && $_FILES['file']['size'] < 100 * 1024){
+                move_uploaded_file($_FILES['file']['tmp_name'], 'upload' . DIRECTORY_SEPARATOR . $email . '.jpeg');
+                $postData['imageurl'] = $email . '.jpeg';
+            }
+            finfo_close($fileInfo);
         }
 
         $result = $this->userResource->insert($postData);
@@ -103,8 +133,17 @@ class UserController extends AbstractController
             return;
         }
 
-        $this->session->logout();
-        $url = Config::get('url_local') . 'user/login';
+        $user = $this->userRepository->findOneBy('email',$email);
+
+        foreach($postData['genres'] as $genreID)
+        {
+            $result = $this->userResource->insertGenre($genreID, $user->getId());
+            if (!$result) {
+                return;
+            }
+        }
+
+        $url = '/user/login';
         header('Location: ' . $url);
     }
 
@@ -122,14 +161,16 @@ class UserController extends AbstractController
             return;
         }
 
-        if($this->session->getUser()->getId() !== $id)
+        if($this->session->getCurrentUser()->getId() !== $id)
         {
             return;
         }
 
-        $this->view->render('userEdit', [
+        $this->view->render('user/register', [
             'user' => $user,
-            'session' => $this->session
+            'edit' => true,
+            'genres' => $this->genreRepository->getList(),
+            'userGenres' => $this->userRepository->findGenreIDs($user->getId())
         ]);
     }
 
@@ -147,7 +188,7 @@ class UserController extends AbstractController
             return;
         }
 
-        if($this->session->getUser()->getId() !== $id)
+        if($this->session->getCurrentUser()->getId() !== $id)
         {
             return;
         }
@@ -162,14 +203,36 @@ class UserController extends AbstractController
             return;
         }
 
+        if(isset($_FILES['profileimg'])){
+            if($user->getImageUrl())
+            {
+                unlink('upload/' . $user->getImageUrl());
+            }
+            $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
+            $fileMimeType = finfo_file($fileInfo, $_FILES['profileimg']['tmp_name']);
+            if (($fileMimeType == 'image/jpeg') && $_FILES['profileimg']['size'] < 100 * 1024){
+                move_uploaded_file($_FILES['profileimg']['tmp_name'], 'upload' . DIRECTORY_SEPARATOR . $email . '.jpeg');
+                $postData['imageurl'] = $email . '.jpeg';
+            }
+            finfo_close($fileInfo);
+        }
+
         $result = $this->userResource->save($id, $postData);
 
         if (!$result) {
             return;
         }
 
-        $url = Config::get('url_local') . 'user/details/' . $id;
-        header('Location: ' . $url);
+        $this->userResource->resetGenres($user->getId());
+        foreach($postData['genres'] as $genreID)
+        {
+            $result = $this->userResource->insertGenre($genreID, $user->getId());
+            if (!$result) {
+                return;
+            }
+        }
+
+        header('Location: /');
     }
 
     public function deleteAction($id)
@@ -189,7 +252,7 @@ class UserController extends AbstractController
             return;
         }
 
-        $url = Config::get('url_local') . 'user/details/' . $id;
+        $url = '/user/list/' . $id;
         header('Location: ' . $url);
     }
 
@@ -197,7 +260,7 @@ class UserController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $user = $this->userRepository->findOneBy('id', $id);
+        $user = $this->userRepository->findOneBy('id', $id, true);
 
         if(!$user)
         {
@@ -210,41 +273,18 @@ class UserController extends AbstractController
             return;
         }
 
-        $url = Config::get('url_local') . 'user/details/' . $id;
+        $url = '/user/list/' . $id;
         header('Location: ' . $url);
-    }
-
-    public function detailsAction($id)
-    {
-        $this->denyAccessUnlessGranted('ROLE_USER');
-
-        $user = $this->userRepository->findOneBy('id', $id);
-
-        if(!$user)
-        {
-            return;
-        }
-
-        $this->view->render('userDetails', [
-            'game' => $user,
-            'session' => $this->session
-        ]);
     }
 
     public function listAction()
     {
-        $this->denyAccessUnlessGranted('ROLE_USER');
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $users = $this->isGranted('ROLE_ADMIN') ? $this->userRepository->getList(true) : $this->userRepository->getList();
+        $users = $this->userRepository->getList(true);
 
-        if(!$users)
-        {
-            return;
-        }
-
-        $this->view->render('gameDetails', [
-            'users' => $users,
-            'session' => $this->session
+        $this->view->render('user/list', [
+            'users' => $users
         ]);
     }
 }

@@ -13,7 +13,7 @@ class GameRepository implements RepositoryInterface
     {
         $list = [];
         $db = Database::getInstance();
-        $countDeleted = $all ? '' : 'where not deleted';
+        $countDeleted = $all ? '' : 'where deleted = 0';
         $statement = $db->prepare('select * from game ' . $countDeleted);
         $statement->execute();
         foreach ($statement->fetchAll() as $game) {
@@ -27,7 +27,8 @@ class GameRepository implements RepositoryInterface
                 'cpucores' => $game->cpucores,
                 'gpuvram' => $game->gpuvram,
                 'ram' => $game->ram,
-                'storagespace' => $game->storagespace
+                'storagespace' => $game->storagespace,
+                'deleted' => $game->deleted
             ]);
         }
         return $list;
@@ -36,7 +37,7 @@ class GameRepository implements RepositoryInterface
     public function propertyExists($key, $value, $all = false)
     {
         $db = Database::getInstance();
-        $countDeleted = $all ? '' : 'not deleted and ';
+        $countDeleted = $all ? '' : 'deleted = 0 and ';
         $statement = $db->prepare('select id from game where '. $countDeleted . $key .' = (?)', [$value]);
         $statement->execute([
             $value
@@ -49,7 +50,7 @@ class GameRepository implements RepositoryInterface
     {
         $game = null;
         $db = Database::getInstance();
-        $countDeleted = $all ? '' : 'not deleted and ';
+        $countDeleted = $all ? '' : 'deleted = 0 and ';
         $statement = $db->prepare('select * from game where '. $countDeleted . $key .' = (?) ', [$value]);
         $statement->execute([
             $value
@@ -65,10 +66,66 @@ class GameRepository implements RepositoryInterface
                 'cpucores' => $game->cpucores,
                 'gpuvram' => $game->gpuvram,
                 'ram' => $game->ram,
-                'storagespace' => $game->storagespace
+                'storagespace' => $game->storagespace,
+                'deleted' => $game->deleted
             ]);
         }
         return $game;
     }
+
+    public function findGenreIDs($gameID)
+    {
+        $list = [];
+        $db = Database::getInstance();
+        $statement = $db->prepare(
+            'SELECT genreID from game_genre where gameID = (:gameID)'
+        );
+        $statement->bindValue('gameID', $gameID);
+        $statement->execute();
+        foreach ($statement->fetchAll() as $id) {
+            $list[] = (int)$id->genreID;
+        }
+        return $list;
+    }
+
+    public function findGenreNames($gameID)
+    {
+        $list = [];
+        $db = Database::getInstance();
+        $statement = $db->prepare(
+            'SELECT g.name from genre g inner join game_genre gg on g.id = gg.genreID
+                        where gg.gameID = (:gameID) '
+        );
+        $statement->bindValue('gameID', $gameID);
+        $statement->execute();
+        foreach ($statement->fetchAll() as $name) {
+            $list[] = $name;
+        }
+        return $list;
+    }
+
+    public function findByGenre($genreID)
+    {
+        $list = [];
+        $db = Database::getInstance();
+        $statement = $db->prepare(
+            'SELECT game.id, game.name, game.releasedate from game
+                        inner join game_genre gg on game.id = gg.gameID
+                        inner join genre on genre.id = gg.genreID
+                        where genre.id = (:genreID) and game.deleted = 0'
+        );
+        $statement->bindValue('genreID', $genreID);
+        $statement->execute();
+        foreach ($statement->fetchAll() as $game) {
+            $list[] = new Game([
+                'id' => $game->id,
+                'name' => $game->name,
+                'releasedate' => $game->releasedate,
+            ]);
+        }
+        return $list;
+
+    }
+
 
 }

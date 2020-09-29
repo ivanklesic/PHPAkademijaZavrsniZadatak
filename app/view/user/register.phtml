@@ -1,0 +1,71 @@
+<form action="<?php if($edit): echo '/user/editPost/' . $user->id; else: echo '/user/registerPost/'; endif; ?>" method="post" enctype="multipart/form-data">
+    <div class="container">
+        <h1><?php if($edit): echo 'Edit'; else: echo 'Register'; endif; ?></h1>
+        <h5>Required</h5>
+        <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="email" class="form-control" id="email" name="email" value="<?php if($edit): echo htmlspecialchars($user->email); endif;?>" placeholder="Enter email">
+        </div>
+        <?php if(!$edit): ?>
+        <div class="form-group">
+            <label for="pass">Password</label>
+            <input type="password" class="form-control" id="pass" name="pass"  placeholder="Password">
+        </div>
+        <div class="form-group">
+            <label for="pass-r">Repeat Password</label>
+            <input type="password" class="form-control" id="pass-r" name="pass-r" placeholder="Repeat Password">
+        </div>
+         <?php endif; ?>
+        <div class="row">
+            <div class="col">
+                <label for="firstname">First Name</label>
+                <input type="text" class="form-control" id="firstname" name="firstname" value="<?php if($edit): echo htmlspecialchars($user->firstname); endif;?>" placeholder="First name">
+            </div>
+            <div class="col">
+                <label for="lastname">Last Name</label>
+                <input type="text" class="form-control" id="lastname" name="lastname" value="<?php if($edit): echo htmlspecialchars($user->lastname); endif;?>" placeholder="Last name">
+            </div>
+        </div>
+        <h5>Optional</h5>
+        <div class="form-group">
+            <label for="profileimg">Profile picture</label>
+            <?php if($edit && $user->imageurl): echo "<img height='100px' width='200px' src='/upload/$user->imageurl'>"; endif;?>
+            <br>
+            <input type="file" class="form-control-file" id="profileimg" name="profileimg">
+        </div>
+        <h6>Select your favorite genres</h6>
+        <?php foreach($genres as $genre): ?>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="genres[]" value="<?php echo $genre->id ?>" id="genres[<?php echo $genre->id ?>]" <?php if(isset($userGenres) && in_array($genre->id, $userGenres)): echo 'checked'; endif;?>>
+            <label class="form-check-label" for="genres[<?php echo $genre->id ?>]">
+                <?php echo htmlspecialchars($genre->name) ?>
+            </label>
+        </div>
+        <?php endforeach; ?>
+        <h6>PC specifications</h6>
+        <div class="row">
+            <div class="col">
+                <label for="cpufreq">CPU frequency</label>
+                <input type="number" class="form-control" step=".1" id="cpufreq" name="cpufreq" value="<?php if($edit): echo htmlspecialchars($user->cpufreq) ?? null; endif;?>"  placeholder="CPU frequency in GHz">
+            </div>
+            <div class="col">
+                <label for="cpucores">CPU cores</label>
+                <input type="number" class="form-control" id="cpucores" name="cpucores" value="<?php if($edit): echo htmlspecialchars($user->cpucores) ?? null; endif;?>" placeholder="Number of CPU cores">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="gpuvram">GPU VRAM</label>
+            <input type="number" class="form-control" id="gpuvram" name="gpuvram" value="<?php if($edit): echo htmlspecialchars($user->gpuvram) ?? null; endif;?>" placeholder="GPU Video RAM in GB">
+        </div>
+        <div class="form-group">
+            <label for="ram">RAM</label>
+            <input type="number" class="form-control" id="ram" name="ram" value="<?php if($edit): echo htmlspecialchars($user->ram) ?? null; endif;?>" placeholder="RAM in GB">
+        </div>
+        <div class="form-group">
+            <label for="storagespace">Storage</label>
+            <input type="number" class="form-control" id="storagespace" value="<?php if($edit): echo htmlspecialchars($user->storagespace) ?? null; endif;?>" name="storagespace" placeholder="Storage space in GB">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>

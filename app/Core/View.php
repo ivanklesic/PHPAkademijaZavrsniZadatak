@@ -6,10 +6,12 @@ namespace App\Core;
 class View
 {
     private $layout;
+    private $session;
 
     public function __construct($layout = "layout")
     {
         $this->layout = basename($layout);
+        $this->session = Session::getInstance();
     }
 
     public function render($name, $args = [])
@@ -18,7 +20,6 @@ class View
         extract($args);
         include BP . DIRECTORY_SEPARATOR . "app/view/$name.phtml";
         $content = ob_get_clean();
-
         if ($this->layout) {
             include BP . DIRECTORY_SEPARATOR . "app/view/{$this->layout}.phtml";
         } else {
@@ -32,4 +33,6 @@ class View
         $date = new \DateTime($date);
         return $date->format($format);
     }
+
+
 }
