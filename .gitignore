@@ -1,3 +1,4 @@
 .idea
 app/config.php
 pub/upload
+var/session/

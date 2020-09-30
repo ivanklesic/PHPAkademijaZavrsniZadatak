@@ -49,10 +49,6 @@ class Router implements RouterInterface
 
     public function matchRoute($path)
     {
-        var_dump($path);
-        var_dump($this->request->requestUri);
-        var_dump($_SERVER['HTTP_HOST']);
-        str_replace('~polaznik23/', '', $path);
         if(!in_array($this->request->requestMethod, $this->supportedHttpMethods))
         {
             $this->invalidMethodHandler();
