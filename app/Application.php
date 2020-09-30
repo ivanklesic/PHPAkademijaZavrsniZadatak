@@ -16,6 +16,7 @@ class Application
 
     public function run()
     {
+        var_dump($this->router->getRequest()->pathInfo);
         return $this->router->matchRoute($this->router->getRequest()->pathInfo ?? '/');
     }
 
