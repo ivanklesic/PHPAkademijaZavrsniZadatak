@@ -16,7 +16,7 @@ class Application
 
     public function run()
     {
-        return $this->router->matchRoute('~polaznik23/' . $this->router->getRequest()->pathInfo ?? '/');
+        return $this->router->matchRoute($this->router->getRequest()->pathInfo ?? '/');
     }
 
 }
