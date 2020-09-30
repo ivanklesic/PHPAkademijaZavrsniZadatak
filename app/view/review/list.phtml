@@ -1,0 +1,53 @@
+<div class="d-flex justify-content-between">
+    <h1>
+        <?php if($game): ?>Reviews for <?php echo $game->name ?>
+    </h1>
+</div>
+<table class="table" id="user-table" style="empty-cells: hide">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Title</th>
+        <th>Game</th>
+        <th>User</th>
+        <th>Rating</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach($reviews as $review): ?>
+        <tr valign="middle">
+            <td>
+                <?php echo $review->id ?>
+            </td>
+            <td>
+                <a href="/review/details/<?php echo $review->id ?>"><?php echo htmlspecialchars($review->title) ?></a>
+            </td>
+
+            <td>
+                <?php echo htmlspecialchars($game->name) ?>
+            </td>
+
+            <td>
+                <?php echo htmlspecialchars($user->firstname) .  ' ' . htmlspecialchars($user->lastname) ?>
+            </td>
+
+            <td>
+                <?php if(!$user->deleted): ?>
+                    <a href="/user/delete/<?php echo $user->id ?>">Delete</a>
+                <?php else: ?>
+                    <a href="/user/restore/<?php echo $user->id ?>">Restore</a>
+                <?php endif; ?>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function () {
+        $('#user-table').DataTable( {
+        });
+
+    });
+</script>

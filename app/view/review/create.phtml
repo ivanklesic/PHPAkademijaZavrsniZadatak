@@ -1,6 +1,6 @@
 <form action="<?php if($edit): echo '/review/editPost/' . $review->id; else: echo '/review/createPost/' . $game->id; endif; ?>" method="post">
     <div class="container">
-        <h1><?php if($edit): echo 'Edit review'; else: echo 'Add new review'; endif; ?></h1>
+        <h1><?php if($edit): echo 'Edit review'; else: echo 'Add new review for ' . htmlspecialchars($game->name); endif; ?></h1>
         <h5>Required</h5>
         <div class="form-group">
             <label for="title">Title</label>
@@ -8,10 +8,10 @@
         </div>
         <div class="form-group">
             <label for="rating">Rating</label>
-            <input type="range" min="1" max="10" class="form-control" id="rating" name="rating" value="<?php if($edit): echo htmlspecialchars($review->title); endif;?>">
+            <input type="number" min="1" max="10" class="form-control" id="rating" name="rating" value="<?php if($edit): echo htmlspecialchars($review->title); endif;?>">
         </div>
         <div class="form-group">
-            <label for="reviewtext">Release date</label>
+            <label for="reviewtext">Text</label>
             <textarea class="form-control" id="reviewtext" name="reviewtext" rows="5" placeholder="Review text"><?php if($edit): echo htmlspecialchars($review->releasedate); endif;?></textarea>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>

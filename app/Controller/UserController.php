@@ -78,7 +78,9 @@ class UserController extends AbstractController
 
     public function registerAction()
     {
-        if ($this->session->isLoggedIn()) {
+        $admin = $this->isGranted('ROLE_ADMIN');
+
+        if ($this->session->isLoggedIn() && !$admin) {
             header('Location: /');
         }
 
@@ -90,7 +92,8 @@ class UserController extends AbstractController
 
     public function registerPostAction()
     {
-        if ($this->session->isLoggedIn()) {
+        $admin = $this->isGranted('ROLE_ADMIN');
+        if ($this->session->isLoggedIn() && !$admin) {
             header('Location: /');
         }
 
@@ -117,17 +120,17 @@ class UserController extends AbstractController
             mkdir('upload');
         }
 
-        if(isset($_FILES['file'])){
+        if(isset($_FILES['profileimg'])){
             $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
-            $fileMimeType = finfo_file($fileInfo, $_FILES['file']['tmp_name']);
-            if (($fileMimeType == 'image/jpeg') && $_FILES['file']['size'] < 100 * 1024){
-                move_uploaded_file($_FILES['file']['tmp_name'], 'upload' . DIRECTORY_SEPARATOR . $email . '.jpeg');
-                $postData['imageurl'] = $email . '.jpeg';
+            $fileMimeType = finfo_file($fileInfo, $_FILES['profileimg']['tmp_name']);
+            if (($fileMimeType == 'image/jpeg') && $_FILES['profileimg']['size'] < 100 * 1024){
+                move_uploaded_file($_FILES['profileimg']['tmp_name'], 'upload' . DIRECTORY_SEPARATOR . $email . '.jpeg');
+                $postData['profileimg'] = $email . '.jpeg';
             }
             finfo_close($fileInfo);
         }
 
-        $result = $this->userResource->insert($postData);
+        $result = $this->userResource->insert($postData, $admin);
 
         if (!$result) {
             return;
@@ -135,15 +138,18 @@ class UserController extends AbstractController
 
         $user = $this->userRepository->findOneBy('email',$email);
 
-        foreach($postData['genres'] as $genreID)
+        if(isset($postData['genres']))
         {
-            $result = $this->userResource->insertGenre($genreID, $user->getId());
-            if (!$result) {
-                return;
+            foreach($postData['genres'] as $genreID)
+            {
+                $result = $this->userResource->insertGenre($genreID, $user->getId());
+                if (!$result) {
+                    return;
+                }
             }
         }
 
-        $url = '/user/login';
+        $url = $admin ? '/user/list' : '/user/login';
         header('Location: ' . $url);
     }
 
@@ -212,7 +218,7 @@ class UserController extends AbstractController
             $fileMimeType = finfo_file($fileInfo, $_FILES['profileimg']['tmp_name']);
             if (($fileMimeType == 'image/jpeg') && $_FILES['profileimg']['size'] < 100 * 1024){
                 move_uploaded_file($_FILES['profileimg']['tmp_name'], 'upload' . DIRECTORY_SEPARATOR . $email . '.jpeg');
-                $postData['imageurl'] = $email . '.jpeg';
+                $postData['profileimg'] = $email . '.jpeg';
             }
             finfo_close($fileInfo);
         }
@@ -224,11 +230,15 @@ class UserController extends AbstractController
         }
 
         $this->userResource->resetGenres($user->getId());
-        foreach($postData['genres'] as $genreID)
+
+        if(isset($postData['genres']))
         {
-            $result = $this->userResource->insertGenre($genreID, $user->getId());
-            if (!$result) {
-                return;
+            foreach($postData['genres'] as $genreID)
+            {
+                $result = $this->userResource->insertGenre($genreID, $user->getId());
+                if (!$result) {
+                    return;
+                }
             }
         }
 
@@ -287,4 +297,59 @@ class UserController extends AbstractController
             'users' => $users
         ]);
     }
+
+    public function resetAction($id)
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        $user = $this->userRepository->findOneBy('id',$id);
+
+        if(!$user)
+        {
+            return;
+        }
+
+        $this->view->render('user/reset', [
+            'user' => $user
+        ]);
+    }
+
+    public function resetPostAction($id)
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        $postData = $this->request->getBody();
+        $passwordCurrent = $postData['pass-c'];
+        $passwordNew = $postData['pass'];
+        $passwordNew2 = $postData['pass-r'];
+
+        if (!$passwordCurrent || !$passwordNew || !$passwordNew2) {
+            return;
+        }
+
+        $user = $this->userRepository->findOneBy('id',$id);
+
+        if(!$user)
+        {
+            return;
+        }
+
+        if (!password_verify($passwordCurrent, $user->password)) {
+            return;
+        }
+
+        if ($passwordNew != $passwordNew2) {
+            return;
+        }
+
+        $result = $this->userResource->resetPassword($id, $passwordNew);
+
+        if (!$result) {
+            return;
+        }
+
+        $this->session->logout();
+        header('Location: /');
+    }
+
 }

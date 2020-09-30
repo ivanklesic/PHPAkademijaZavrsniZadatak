@@ -32,8 +32,15 @@ class ReviewController extends AbstractController
             return;
         }
 
-        $this->view->render('createReview', [
-            'game' => $game
+        $userID = $this->session->getCurrentUser()->id;
+
+        if($this->reviewRepository->reviewExists($userID, $gameID)) {
+            header('Location: /');
+        }
+
+        $this->view->render('review/create', [
+            'game' => $game,
+            'edit' => false
         ]);
     }
 
@@ -42,8 +49,10 @@ class ReviewController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         $postData = $this->request->getBody();
-        $userID = $postData['userID'];
-        $gameID = $postData['gameID'];
+
+        $userID = $this->session->getCurrentUser()->id;
+        $postData['userid'] = $userID;
+        $postData['gameid'] = $gameID;
         $rating = $postData['rating'];
         $title = $postData['title'];
         $reviewtext = $postData['reviewtext'];
@@ -52,7 +61,7 @@ class ReviewController extends AbstractController
             return;
         }
 
-        if($this->reviewRepository->propertyExists('userID', $userID) && $this->reviewRepository->propertyExists('gameID', $gameID)) {
+        if($this->reviewRepository->reviewExists($userID, $gameID)) {
             return;
         }
 
@@ -82,8 +91,9 @@ class ReviewController extends AbstractController
             return;
         }
 
-        $this->view->render('reviewEdit', [
-            'review' => $review
+        $this->view->render('review/create', [
+            'review' => $review,
+            'edit' => true
         ]);
     }
 
@@ -163,7 +173,7 @@ class ReviewController extends AbstractController
         ]);
     }
 
-    public function listAction($all = false)
+    public function listAction($gameID = null)
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
@@ -174,7 +184,7 @@ class ReviewController extends AbstractController
             return;
         }
 
-        $reviews = $this->isGranted('ROLE_ADMIN') ? $this->reviewRepository->getList(true) : $this->reviewRepository->findBy('gameID', $gameID);
+        $reviews = $gameID ? $this->reviewRepository->findBy('gameID', $gameID) : $this->reviewRepository->findBy('userID', $this->session->getCurrentUser()->id);
 
         if(!$reviews)
         {

@@ -36,7 +36,7 @@ class UserResource implements ResourceInterface
         return $statement->execute();
     }
 
-    public function save($id, $data)
+    public function save($userID, $data)
     {
         $db = Database::getInstance();
         $statement = $db->prepare(
@@ -52,18 +52,18 @@ class UserResource implements ResourceInterface
         $statement->bindValue('gpuvram', $data['gpuvram'] ?? null);
         $statement->bindValue('ram', $data['ram'] ?? null);
         $statement->bindValue('storagespace', $data['storagespace'] ?? null);
-        $statement->bindValue('id', $id);
+        $statement->bindValue('id', $userID);
 
         return $statement->execute();
     }
 
-    public function setDeleted($id, $delete = 1)
+    public function setDeleted($userID, $delete = 1)
     {
         $db = Database::getInstance();
         $statement = $db->prepare(
             'UPDATE user SET deleted = (:delete) WHERE id = (:id)'
         );
-        $statement->bindValue('id', $id);
+        $statement->bindValue('id', $userID);
         $statement->bindValue('deleted', $delete);
 
         return $statement->execute();
@@ -92,4 +92,18 @@ class UserResource implements ResourceInterface
 
         return $statement->execute();
     }
+
+    public function resetPassword($userID, $password)
+    {
+        $db = Database::getInstance();
+        $statement = $db->prepare(
+            'UPDATE user SET pass = (:password) WHERE id = (:id)'
+        );
+        $statement->bindValue('id', $userID);
+        $statement->bindValue('password', password_hash($password, PASSWORD_DEFAULT));
+
+        return $statement->execute();
+    }
+
+
 }

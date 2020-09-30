@@ -1,3 +1,10 @@
+<?php if($edit): ?>
+<div class="d-flex justify-content-between">
+    <span>
+        <a class="btn btn-success float-right" style="margin:10px 0 10px 10px;" href="/user/reset/<?php echo $user->id; ?>">Reset password</a>
+    </span>
+</div>
+<?php endif; ?>
 <form action="<?php if($edit): echo '/user/editPost/' . $user->id; else: echo '/user/registerPost/'; endif; ?>" method="post" enctype="multipart/form-data">
     <div class="container">
         <h1><?php if($edit): echo 'Edit'; else: echo 'Register'; endif; ?></h1>

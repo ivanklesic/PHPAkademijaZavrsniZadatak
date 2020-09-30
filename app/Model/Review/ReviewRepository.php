@@ -23,7 +23,6 @@ class ReviewRepository implements RepositoryInterface
                 'rating' => $review->rating,
                 'title' => $review->title,
                 'reviewtext' => $review->reviewtext,
-                'deleted' => $review->deleted
             ]);
         }
         return $list;
@@ -56,7 +55,6 @@ class ReviewRepository implements RepositoryInterface
                 'rating' => $review->rating,
                 'title' => $review->title,
                 'reviewtext' => $review->reviewtext,
-                'deleted' => $review->deleted
             ]);
         }
         return $review;
@@ -78,10 +76,21 @@ class ReviewRepository implements RepositoryInterface
                 'rating' => $review->rating,
                 'title' => $review->title,
                 'reviewtext' => $review->reviewtext,
-                'deleted' => $review->deleted
             ]);
         }
         return $list;
+    }
+
+    public function reviewExists($userID, $gameID)
+    {
+        $db = Database::getInstance();
+        $statement = $db->prepare('select id from review where userID = (?) and gameID = (?)', [$userID, $gameID]);
+        $statement->execute([
+            $userID,
+            $gameID
+        ]);
+        $fetched = $statement->rowCount();
+        return (bool)$fetched;
     }
 
 }

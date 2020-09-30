@@ -14,10 +14,10 @@ class Database extends  \PDO
     {
     }
 
-    private function __construct($remote = null)
+    private function __construct()
     {
 
-        $dbConfig = Config::get($remote ? 'db_remote' : 'db_local');
+        $dbConfig = Config::get('db');
 
         $dsn = 'mysql:host='.$dbConfig['host'].';dbname='.$dbConfig['name'].';charset=utf8';
 
