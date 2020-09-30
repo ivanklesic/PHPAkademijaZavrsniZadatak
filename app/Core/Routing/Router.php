@@ -49,6 +49,7 @@ class Router implements RouterInterface
 
     public function matchRoute($path)
     {
+        str_replace('~polaznik23', '', $path);
         if(!in_array($this->request->requestMethod, $this->supportedHttpMethods))
         {
             $this->invalidMethodHandler();
