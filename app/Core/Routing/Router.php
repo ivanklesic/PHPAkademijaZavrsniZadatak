@@ -49,6 +49,8 @@ class Router implements RouterInterface
 
     public function matchRoute($path)
     {
+        var_dump($path);
+        var_dump($this->request->requestURI);
         if(!in_array($this->request->requestMethod, $this->supportedHttpMethods))
         {
             $this->invalidMethodHandler();
@@ -57,13 +59,13 @@ class Router implements RouterInterface
         $path = str_replace(self::URL_SUFFIX, '', $path);
         $parts = $path ? explode('/', $path) : [];
 
-        if (count($parts) > 4) {
+        if (count($parts) > 3) {
             $this->invalidURLHandler($path);
         }
 
-        $controller = ucfirst(strtolower($parts[1] ?? 'home')) . 'Controller';
-        $method = strtolower($parts[2] ?? 'index') . 'Action';
-        $argument = $parts[3] ?? null;
+        $controller = ucfirst(strtolower($parts[0] ?? 'home')) . 'Controller';
+        $method = strtolower($parts[1] ?? 'index') . 'Action';
+        $argument = $parts[2] ?? null;
 
         $controllerClassName = self::CONTROLLER_NAMESPACE . $controller;
 
