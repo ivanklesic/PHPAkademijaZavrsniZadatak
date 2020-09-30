@@ -50,7 +50,7 @@ class Router implements RouterInterface
     public function matchRoute($path)
     {
         var_dump($path);
-        var_dump($this->request->requestURI);
+        var_dump($this->request->requestUri);
         if(!in_array($this->request->requestMethod, $this->supportedHttpMethods))
         {
             $this->invalidMethodHandler();
