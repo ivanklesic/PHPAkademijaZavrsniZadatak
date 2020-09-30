@@ -51,6 +51,7 @@ class Router implements RouterInterface
     {
         var_dump($path);
         var_dump($this->request->requestUri);
+        var_dump($_SERVER['HTTP_HOST']);
         str_replace('~polaznik23/', '', $path);
         if(!in_array($this->request->requestMethod, $this->supportedHttpMethods))
         {
@@ -69,6 +70,7 @@ class Router implements RouterInterface
         $argument = $parts[2] ?? null;
 
         $controllerClassName = self::CONTROLLER_NAMESPACE . $controller;
+
 
         $this->dispatch($controllerClassName, $method, $argument);
     }
