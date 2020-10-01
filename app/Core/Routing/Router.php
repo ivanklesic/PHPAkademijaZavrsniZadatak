@@ -67,7 +67,9 @@ class Router implements RouterInterface
         $argument = $parts[2] ?? null;
         var_dump(3);
         $controllerClassName = self::CONTROLLER_NAMESPACE . $controller;
-
+        var_dump($controllerClassName);
+        var_dump($method);
+        var_dump($argument);
 
         $this->dispatch($controllerClassName, $method, $argument);
     }
