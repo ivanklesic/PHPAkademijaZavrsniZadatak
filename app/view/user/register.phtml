@@ -40,6 +40,7 @@
             <br>
             <input type="file" class="form-control-file" id="profileimg" name="profileimg">
         </div>
+        <?php if (isset($genres)): ?>
         <h6>Select your favorite genres</h6>
         <?php foreach($genres as $genre): ?>
         <div class="form-check">
@@ -49,6 +50,7 @@
             </label>
         </div>
         <?php endforeach; ?>
+        <?php endif; ?>
         <h6>PC specifications</h6>
         <div class="row">
             <div class="col">

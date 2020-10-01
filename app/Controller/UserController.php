@@ -85,7 +85,7 @@ class UserController extends AbstractController
         }
         var_dump(5);
         $this->view->render('user/register', [
-            'genres' => $this->genreRepository->getList(),
+            'genres' => $this->genreRepository->getList() ?? null,
             'edit' => false
         ]);
     }
