@@ -10,9 +10,10 @@ class View
 
     public function __construct($layout = "layout")
     {
-        var_dump(11);
+
         $this->layout = basename($layout);
         $this->session = Session::getInstance();
+        var_dump(11);
     }
 
     public function render($name, $args = [])
