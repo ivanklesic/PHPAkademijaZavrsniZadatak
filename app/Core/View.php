@@ -17,9 +17,9 @@ class View
 
     public function render($name, $args = [])
     {
+        var_dump(10);
         ob_start();
         extract($args);
-        var_dump(10);
         var_dump(BP);
         include BP . DIRECTORY_SEPARATOR . "app/view/$name.phtml";
         $content = ob_get_clean();
