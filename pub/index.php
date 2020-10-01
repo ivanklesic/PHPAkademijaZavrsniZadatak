@@ -4,7 +4,7 @@ use App\Application;
 use App\Core\Routing\Router;
 use App\Core\Request\Request;
 
-define('BP', dirname(__DIR__));
+define('BP', dirname(__DIR__) . '');
 
 spl_autoload_register(function ($class) {
     $class = lcfirst($class);

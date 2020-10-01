@@ -18,6 +18,7 @@ class View
     {
         ob_start();
         extract($args);
+        var_dump(BP);
         include BP . DIRECTORY_SEPARATOR . "app/view/$name.phtml";
         $content = ob_get_clean();
         if ($this->layout) {
