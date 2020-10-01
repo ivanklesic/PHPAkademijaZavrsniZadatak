@@ -79,13 +79,13 @@ class UserController extends AbstractController
     public function registerAction()
     {
         $admin = $this->isGranted('ROLE_ADMIN');
-        var_dump(4);
+
         if ($this->session->isLoggedIn() && !$admin) {
             header('Location: /');
         }
-        var_dump(5);
+
         $this->view->render('user/register', [
-            'genres' => $this->genreRepository->getList() ?? null,
+            'genres' => $this->genreRepository->getList(),
             'edit' => false
         ]);
     }

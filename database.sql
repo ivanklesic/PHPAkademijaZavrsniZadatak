@@ -100,4 +100,4 @@ create trigger update_rating_on_update
         totalratingssum = totalratingssum + NEW.rating
     WHERE id = NEW.gameID;
 
-insert into user (firstname, lastname, email, pass, roles) values ('Admin', 'Admin', 'admin@admin.com', '$2y$10$MkCtNDV4iBI4ySwOiqTIA.HOd55UjDo2b9ibVmq4dkQXqSKPl3aLq','ROLE_USER,ROLE_ADMIN')
+insert into user (firstname, lastname, email, pass, roles) values ('Admin', 'Admin', 'admin@admin.com', '$2y$10$MkCtNDV4iBI4ySwOiqTIA.HOd55UjDo2b9ibVmq4dkQXqSKPl3aLq','ROLE_USER,ROLE_ADMIN');

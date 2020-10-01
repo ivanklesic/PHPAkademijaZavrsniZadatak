@@ -53,7 +53,7 @@ class Router implements RouterInterface
         {
             $this->invalidMethodHandler();
         }
-        var_dump(1);
+
         $path = trim($path, '/');
         $path = str_replace(self::URL_SUFFIX, '', $path);
         $parts = $path ? explode('/', $path) : [];
@@ -61,15 +61,13 @@ class Router implements RouterInterface
         if (count($parts) > 3) {
             $this->invalidURLHandler($path);
         }
-        var_dump(2);
+
         $controller = ucfirst(strtolower($parts[0] ?? 'home')) . 'Controller';
         $method = strtolower($parts[1] ?? 'index') . 'Action';
         $argument = $parts[2] ?? null;
-        var_dump(3);
+
         $controllerClassName = self::CONTROLLER_NAMESPACE . $controller;
-        var_dump($controllerClassName);
-        var_dump($method);
-        var_dump($argument);
+
 
         $this->dispatch($controllerClassName, $method, $argument);
     }
