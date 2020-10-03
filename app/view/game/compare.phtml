@@ -1,0 +1,78 @@
+<table class="table" id="review-table" style="empty-cells: hide">
+    <thead>
+    <tr>
+        <th></th>
+        <th>CPU frequency</th>
+        <th>Number of CPU cores</th>
+        <th>Video RAM</th>
+        <th>RAM</th>
+        <th>Storage space</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr valign="middle">
+        <td>
+            Your PC:
+        </td>
+        <td>
+            <?php echo $user->cpufreq ?>
+        </td>
+        <td>
+            <?php echo $user->cpucores ?>
+        </td>
+        <td>
+            <?php echo $user->gpuvram ?>
+        </td>
+        <td>
+            <?php echo $user->ram ?>
+        </td>
+        <td>
+            <?php echo $user->storagespace ?>
+        </td>
+    </tr>
+    <tr valign="middle">
+        <td>
+            <?php echo $game->name ?> - minimum requirements:
+        </td>
+        <td>
+            <?php echo $game->cpufreq ?>
+        </td>
+        <td>
+            <?php echo $game->cpucores ?>
+        </td>
+        <td>
+            <?php echo $game->gpuvram ?>
+        </td>
+        <td>
+            <?php echo $game->ram ?>
+        </td>
+        <td>
+            <?php echo $game->storagespace ?>
+        </td>
+    </tr>
+    <tr valign="middle">
+        <td>
+            Results:
+        </td>
+        <td>
+            <?php if($game->cpufreq <= $user->cpufreq): ?> <i class="fa fa-check"></i><?php else: ?><i class="fa fa-times"></i><?php endif; ?>
+        </td>
+        <td>
+            <?php if($game->cpucores <= $user->cpucores): ?> <i class="fa fa-check"></i><?php else: ?><i class="fa fa-times"></i><?php endif; ?>
+        </td>
+        <td>
+            <?php if($game->gpuvram <= $user->gpuvram): ?> <i class="fa fa-check"></i><?php else: ?><i class="fa fa-times"></i><?php endif; ?>
+        </td>
+        <td>
+            <?php if($game->ram <= $user->ram): ?> <i class="fa fa-check"></i><?php else: ?><i class="fa fa-times"></i><?php endif; ?>
+        </td>
+        <td>
+            <?php if($game->storagespace <= $user->storagespace): ?> <i class="fa fa-check"></i><?php else: ?><i class="fa fa-times"></i><?php endif; ?>
+        </td>
+    </tr>
+
+    </tbody>
+</table>
+
+<script>
+</script>

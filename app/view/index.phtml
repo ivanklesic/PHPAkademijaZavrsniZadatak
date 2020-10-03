@@ -1,13 +1,10 @@
 <div class="container">
-
     <div class="row">
-
         <div class="col-lg-2">
-
             <br>
             <div class="list-group">
                 <?php foreach ($genres as $genre): ?>
-                <a href="/home/index/<?php echo $genre->id ?>" class="list-group-item"><?php echo htmlspecialchars($genre->name) ?></a>
+                <a href="<?php \App\Core\Config::prependToURL() ?>/home/index/<?php echo $genre->id ?>" class="list-group-item"><?php echo htmlspecialchars($genre->name) ?></a>
                 <?php endforeach; ?>
             </div>
         </div>
@@ -19,16 +16,19 @@
                     <div class="card h-100">
                         <div class="card-body">
                             <h4 class="card-title">
-                                <a href="/game/detail/<?php echo $game->id ?>"><?php echo htmlspecialchars($game->name) ?></a>
+                                <a href="<?php \App\Core\Config::prependToURL() ?>/game/detail/<?php echo $game->id ?>"><?php echo htmlspecialchars($game->name) ?></a>
                             </h4>
                             <h6>Release date: <?php echo $this->formatDate($game->releasedate, 'd.m.Y.') ?></h6>
                             Average rating: <?php if($game->totalratingssum && $game->totalratingscount): {echo $game->totalratingssum/$game->totalratingscount;} else: {echo 'N/A';} endif;?>
                             <br>
-                            Total reviews:<?php echo $game->totalratingscount;?>
+                            Total reviews: <?php echo $game->totalratingscount;?>
                         </div>
                         <div class="card-footer">
-                            <small class="text-muted">
-                                <a href="/review/create/<?php echo $game->id ?>">Write a review for this game</a>
+                            <small class="text-muted" style="width: 33%">
+                                <a href="<?php \App\Core\Config::prependToURL() ?>/review/create/<?php echo $game->id ?>">Review</a> |
+                                <a href="<?php \App\Core\Config::prependToURL() ?>/review/list/<?php echo $game->id ?>">List reviews for this game</a><br>
+                                <a href="<?php \App\Core\Config::prependToURL() ?>/game/compare/<?php echo $game->id ?>">Compare specs</a> |
+                                <a href="<?php \App\Core\Config::prependToURL() ?>/game/bestDeal/<?php echo $game->id ?>">Search for best deal</a>
                             </small>
                         </div>
                     </div>
@@ -38,4 +38,3 @@
         </div>
     </div>
 </div>
-

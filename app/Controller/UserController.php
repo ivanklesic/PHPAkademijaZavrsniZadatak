@@ -125,7 +125,7 @@ class UserController extends AbstractController
             $fileMimeType = finfo_file($fileInfo, $_FILES['profileimg']['tmp_name']);
             if (($fileMimeType == 'image/jpeg') && $_FILES['profileimg']['size'] < 100 * 1024){
                 move_uploaded_file($_FILES['profileimg']['tmp_name'], 'upload' . DIRECTORY_SEPARATOR . $email . '.jpeg');
-                $postData['profileimg'] = $email . '.jpeg';
+                $postData['imageurl'] = $email . '.jpeg';
             }
             finfo_close($fileInfo);
         }
@@ -218,7 +218,7 @@ class UserController extends AbstractController
             $fileMimeType = finfo_file($fileInfo, $_FILES['profileimg']['tmp_name']);
             if (($fileMimeType == 'image/jpeg') && $_FILES['profileimg']['size'] < 100 * 1024){
                 move_uploaded_file($_FILES['profileimg']['tmp_name'], 'upload' . DIRECTORY_SEPARATOR . $email . '.jpeg');
-                $postData['profileimg'] = $email . '.jpeg';
+                $postData['imageurl'] = $email . '.jpeg';
             }
             finfo_close($fileInfo);
         }

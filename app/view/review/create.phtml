@@ -8,11 +8,11 @@
         </div>
         <div class="form-group">
             <label for="rating">Rating</label>
-            <input type="number" min="1" max="10" class="form-control" id="rating" name="rating" value="<?php if($edit): echo htmlspecialchars($review->title); endif;?>">
+            <input type="number" min="1" max="10" class="form-control" id="rating" name="rating" value="<?php if($edit): echo htmlspecialchars($review->rating); endif;?>">
         </div>
         <div class="form-group">
             <label for="reviewtext">Text</label>
-            <textarea class="form-control" id="reviewtext" name="reviewtext" rows="5" placeholder="Review text"><?php if($edit): echo htmlspecialchars($review->releasedate); endif;?></textarea>
+            <textarea class="form-control" id="reviewtext" name="reviewtext" rows="5" placeholder="Review text"><?php if($edit): echo htmlspecialchars($review->reviewtext); endif;?></textarea>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </div>

@@ -3,9 +3,10 @@
 
 namespace App\Controller;
 
-use App\Core\Controller\AbstractController ;
+use App\Core\Controller\AbstractController;
 use App\Model\Game;
 use App\Model\Genre;
+use App\Core\Curl;
 
 class GameController extends AbstractController
 {
@@ -208,6 +209,58 @@ class GameController extends AbstractController
 
         $this->view->render('game/list', [
             'games' => $games
+        ]);
+    }
+
+    public function compareAction($id)
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        $game = $this->gameRepository->findOneBy('id', $id);
+
+        if(!$game)
+        {
+            return;
+        }
+
+        $user = $this->session->getCurrentUser();
+
+        if(!$user || !$user->cpufreq || !$user->cpucores || !$user->gpuvram || !$user->ram || !$user->storagespace)
+        {
+            return;
+        }
+
+        $this->view->render('game/compare', [
+            'game' => $game,
+            'user' => $user
+        ]);
+    }
+
+    public function bestDealAction($id)
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        $game = $this->gameRepository->findOneBy('id', $id);
+
+        if(!$game)
+        {
+            return;
+        }
+
+        $gameLookup = new Curl\CurlGet('games', [
+            'title' => $game->name
+        ]);
+
+        $deals = $gameLookup->getResponse();
+
+        if(!$deals)
+        {
+            return;
+        }
+
+        $this->view->render('game/deals', [
+            'deals' => json_decode($deals),
+            'game' => $game
         ]);
     }
 }

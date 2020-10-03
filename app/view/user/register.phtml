@@ -1,7 +1,7 @@
 <?php if($edit): ?>
 <div class="d-flex justify-content-between">
     <span>
-        <a class="btn btn-success float-right" style="margin:10px 0 10px 10px;" href="/user/reset/<?php echo $user->id; ?>">Reset password</a>
+        <a class="btn btn-success float-right" style="margin:10px 0 10px 10px;" href="<?php \App\Core\Config::prependToURL() ?>/user/reset/<?php echo $user->id; ?>">Reset password</a>
     </span>
 </div>
 <?php endif; ?>
@@ -35,8 +35,8 @@
         </div>
         <h5>Optional</h5>
         <div class="form-group">
-            <label for="profileimg">Profile picture</label>
-            <?php if($edit && $user->imageurl): echo "<img height='100px' width='200px' src='/upload/$user->imageurl'>"; endif;?>
+            <label for="profileimg">Profile picture (.jpeg only, max 100kb)</label>
+            <?php if($edit && $user->imageurl): ?> <img height='100px' width='200px' src="<?php \App\Core\Config::prependToURL() ?>/upload/<?php echo $user->imageurl ?>"><?php endif; ?>
             <br>
             <input type="file" class="form-control-file" id="profileimg" name="profileimg">
         </div>

@@ -3,13 +3,11 @@
 
 namespace App\Core\Controller;
 
-
-use App\Core\Config;
 use App\Core\Request\Request;
 use App\Core\Session;
 use App\Core\View;
 
-class AbstractController
+abstract class AbstractController
 {
     protected $view;
     protected $session;
@@ -24,9 +22,10 @@ class AbstractController
 
     public function denyAccessUnlessGranted($role)
     {
-        if($this->session->getCurrentUser())
+        $currentUser = $this->session->getCurrentUser();
+        if($currentUser)
         {
-            if(in_array($role, explode(',',$this->session->getCurrentUser()->getRoles())))
+            if(in_array($role, explode(',',$currentUser->getRoles())))
             {
                 return;
             }
@@ -37,9 +36,10 @@ class AbstractController
 
     public function isGranted($role)
     {
-        if($this->session->getCurrentUser())
+        $currentUser = $this->session->getCurrentUser();
+        if($currentUser)
         {
-            if(in_array($role, explode(',',$this->session->getCurrentUser()->getRoles())))
+            if(in_array($role, explode(',',$currentUser->getRoles())))
             {
                 return true;
             }
@@ -48,5 +48,8 @@ class AbstractController
         return false;
     }
 
+    public function redirect($path = '/')
+    {
 
+    }
 }

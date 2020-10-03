@@ -1,17 +1,20 @@
 <div class="d-flex justify-content-between">
     <h1>
-        <?php if($game): ?>Reviews for <?php echo $game->name ?>
+        <?php if($game): ?>Reviews for <?php echo htmlspecialchars($game->name); else:?>My reviews<?php endif; ?>
     </h1>
 </div>
-<table class="table" id="user-table" style="empty-cells: hide">
+<table class="table" id="review-table" style="empty-cells: hide">
     <thead>
     <tr>
-        <th>Id</th>
+        <th>Review ID</th>
         <th>Title</th>
-        <th>Game</th>
-        <th>User</th>
         <th>Rating</th>
-        <th>Actions</th>
+        <?php if(!$game): ?>
+            <th>Game</th>
+            <th>Actions</th>
+        <?php else: ?>
+            <th>Reviewer</th>
+        <?php endif; ?>
     </tr>
     </thead>
     <tbody>
@@ -21,24 +24,24 @@
                 <?php echo $review->id ?>
             </td>
             <td>
-                <a href="/review/details/<?php echo $review->id ?>"><?php echo htmlspecialchars($review->title) ?></a>
+                <a href="<?php \App\Core\Config::prependToURL() ?>/review/detail/<?php echo $review->id ?>"><?php echo htmlspecialchars($review->title) ?></a>
             </td>
-
             <td>
-                <?php echo htmlspecialchars($game->name) ?>
+                <?php echo htmlspecialchars($review->rating) ?>/10
             </td>
-
-            <td>
-                <?php echo htmlspecialchars($user->firstname) .  ' ' . htmlspecialchars($user->lastname) ?>
-            </td>
-
-            <td>
-                <?php if(!$user->deleted): ?>
-                    <a href="/user/delete/<?php echo $user->id ?>">Delete</a>
-                <?php else: ?>
-                    <a href="/user/restore/<?php echo $user->id ?>">Restore</a>
-                <?php endif; ?>
-            </td>
+            <?php if(!$game): ?>
+                <td>
+                    <?php echo $review->game ?>
+                </td>
+                <td>
+                    <a href="<?php \App\Core\Config::prependToURL() ?>/review/edit/<?php echo $review->id ?>">Edit</a> |
+                    <a href="<?php \App\Core\Config::prependToURL() ?>/review/delete/<?php echo $review->id ?>">Delete</a>
+                </td>
+            <?php else: ?>
+                <td>
+                    <?php echo $review->user ?>
+                </td>
+            <?php endif; ?>
         </tr>
     <?php endforeach; ?>
     </tbody>
@@ -46,7 +49,7 @@
 
 <script>
     $(document).ready(function () {
-        $('#user-table').DataTable( {
+        $('#review-table').DataTable( {
         });
 
     });

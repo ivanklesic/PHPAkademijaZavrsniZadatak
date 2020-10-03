@@ -34,8 +34,10 @@ class ReviewController extends AbstractController
 
         $userID = $this->session->getCurrentUser()->id;
 
-        if($this->reviewRepository->reviewExists($userID, $gameID)) {
-            header('Location: /');
+        $review = $this->reviewRepository->findOneByGameAndUser($gameID, $userID);
+
+        if($review) {
+            header('Location: /review/edit/' . $review->id);
         }
 
         $this->view->render('review/create', [
@@ -61,7 +63,7 @@ class ReviewController extends AbstractController
             return;
         }
 
-        if($this->reviewRepository->reviewExists($userID, $gameID)) {
+        if($this->reviewRepository->findOneByGameAndUser($gameID, $userID)) {
             return;
         }
 
@@ -86,7 +88,7 @@ class ReviewController extends AbstractController
             return;
         }
 
-        if($this->session->getCurrentUser()->getId() !== $review->getUserID())
+        if($this->session->getCurrentUser()->getId() !== $review->userID)
         {
             return;
         }
@@ -177,19 +179,14 @@ class ReviewController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
-        $game = $this->gameRepository->findOneBy('id', $gameID);
+        $game = null;
 
-        if(!$game)
+        if($gameID)
         {
-            return;
+            $game = $this->gameRepository->findOneBy('id', $gameID);
         }
 
-        $reviews = $gameID ? $this->reviewRepository->findBy('gameID', $gameID) : $this->reviewRepository->findBy('userID', $this->session->getCurrentUser()->id);
-
-        if(!$reviews)
-        {
-            return;
-        }
+        $reviews = $game ? $this->reviewRepository->findBy('gameID', $gameID) : $this->reviewRepository->findBy('userID', $this->session->getCurrentUser()->id);
 
         $this->view->render('review/list', [
             'reviews' => $reviews,
