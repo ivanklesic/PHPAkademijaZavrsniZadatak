@@ -5,7 +5,7 @@
     </span>
 </div>
 <?php endif; ?>
-<form action="<?php if($edit): echo '/user/editPost/' . $user->id; else: echo '/user/registerPost/'; endif; ?>" method="post" enctype="multipart/form-data">
+<form action="<?php echo \App\Core\Config::prependToURL(); if($edit): echo '/user/editPost/' . $user->id; else: echo '/user/registerPost/'; endif; ?>" method="post" enctype="multipart/form-data">
     <div class="container">
         <h1><?php if($edit): echo 'Edit'; else: echo 'Register'; endif; ?></h1>
         <h5>Required</h5>
@@ -36,7 +36,7 @@
         <h5>Optional</h5>
         <div class="form-group">
             <label for="profileimg">Profile picture (.jpeg only, max 100kb)</label>
-            <?php if($edit && $user->imageurl): ?> <img height='100px' width='200px' src="<?php \App\Core\Config::prependToURL() ?>/upload/<?php echo $user->imageurl ?>"><?php endif; ?>
+            <?php if($edit && $user->imageurl): ?> <img height='100px' width='200px' src="<?php echo \App\Core\Config::prependToURL() ?>/upload/<?php echo $user->imageurl ?>"><?php endif; ?>
             <br>
             <input type="file" class="form-control-file" id="profileimg" name="profileimg">
         </div>
