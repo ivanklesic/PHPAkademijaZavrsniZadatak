@@ -14,6 +14,6 @@ class Config
 
     public static function prependToURL()
     {
-        echo $_SERVER['HTTP_HOST'] == 'phpacademy.inchoo.io' ? '/~polaznik23/' : '';
+        return $_SERVER['HTTP_HOST'] == 'phpacademy.inchoo.io' ? '/~polaznik23/' : '';
     }
 }

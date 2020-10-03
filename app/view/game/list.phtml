@@ -3,7 +3,7 @@
         Games
     </h1>
     <span>
-        <a class="btn btn-success float-right" style="margin:10px 0 10px 10px;" href="<?php \App\Core\Config::prependToURL() ?>/game/create">Add a new game</a>
+        <a class="btn btn-success float-right" style="margin:10px 0 10px 10px;" href="<?php echo \App\Core\Config::prependToURL() ?>/game/create">Add a new game</a>
     </span>
 
 
@@ -71,12 +71,12 @@
             <?php echo $game->storagespace ?>
         </td>
         <td>
-            <a href="<?php \App\Core\Config::prependToURL() ?>/game/edit/<?php echo $game->id ?>">Edit</a>
+            <a href="<?php echo \App\Core\Config::prependToURL() ?>/game/edit/<?php echo $game->id ?>">Edit</a>
             |
             <?php if(!$game->deleted): ?>
-            <a href="<?php \App\Core\Config::prependToURL() ?>/game/delete/<?php echo $game->id ?>">Delete</a>
+            <a href="<?php echo \App\Core\Config::prependToURL() ?>/game/delete/<?php echo $game->id ?>">Delete</a>
             <?php else: ?>
-            <a href="<?php \App\Core\Config::prependToURL() ?>/game/restore/<?php echo $game->id ?>">Restore</a>
+            <a href="<?php echo \App\Core\Config::prependToURL() ?>/game/restore/<?php echo $game->id ?>">Restore</a>
             <?php endif; ?>
         </td>
     </tr>

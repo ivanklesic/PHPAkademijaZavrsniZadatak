@@ -3,7 +3,7 @@
         Genres
     </h1>
     <span>
-        <a class="btn btn-success float-right" style="margin:10px 0 10px 10px;" href="<?php \App\Core\Config::prependToURL() ?>/genre/create/">Add a new genre</a>
+        <a class="btn btn-success float-right" style="margin:10px 0 10px 10px;" href="<?php echo \App\Core\Config::prependToURL() ?>/genre/create/">Add a new genre</a>
     </span>
 </div>
 
@@ -25,12 +25,12 @@
             <?php echo htmlspecialchars($genre->name) ?>
         </td>
         <td>
-            <a href="<?php \App\Core\Config::prependToURL() ?>/genre/edit/<?php echo $genre->id ?>">Edit</a>
+            <a href="<?php echo \App\Core\Config::prependToURL() ?>/genre/edit/<?php echo $genre->id ?>">Edit</a>
             |
             <?php if(!$genre->deleted): ?>
-            <a href="<?php \App\Core\Config::prependToURL() ?>/genre/delete/<?php echo $genre->id ?>">Delete</a>
+            <a href="<?php echo \App\Core\Config::prependToURL() ?>/genre/delete/<?php echo $genre->id ?>">Delete</a>
             <?php else: ?>
-            <a href="<?php \App\Core\Config::prependToURL() ?>/genre/restore/<?php echo $genre->id ?>">Restore</a>
+            <a href="<?php echo \App\Core\Config::prependToURL() ?>/genre/restore/<?php echo $genre->id ?>">Restore</a>
             <?php endif; ?>
         </td>
     </tr>

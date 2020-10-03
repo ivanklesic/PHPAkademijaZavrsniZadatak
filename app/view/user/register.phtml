@@ -1,7 +1,7 @@
 <?php if($edit): ?>
 <div class="d-flex justify-content-between">
     <span>
-        <a class="btn btn-success float-right" style="margin:10px 0 10px 10px;" href="<?php \App\Core\Config::prependToURL() ?>/user/reset/<?php echo $user->id; ?>">Reset password</a>
+        <a class="btn btn-success float-right" style="margin:10px 0 10px 10px;" href="<?php echo \App\Core\Config::prependToURL() ?>/user/reset/<?php echo $user->id; ?>">Reset password</a>
     </span>
 </div>
 <?php endif; ?>

@@ -20,21 +20,21 @@
         <ul class="navbar-nav mr-auto">
             <?php if($this->session->isGranted('ROLE_USER')): ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php \App\Core\Config::prependToURL() ?>/home/index">Home</a>
+                    <a class="nav-link" href="<?php echo \App\Core\Config::prependToURL() ?>/home/index">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php \App\Core\Config::prependToURL() ?>/review/list">My reviews</a>
+                    <a class="nav-link" href="<?php echo \App\Core\Config::prependToURL() ?>/review/list">My reviews</a>
                 </li>
             <?php endif ?>
             <?php if($this->session->isGranted('ROLE_ADMIN')): ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php \App\Core\Config::prependToURL() ?>/game/list">Games</a>
+                    <a class="nav-link" href="<?php echo \App\Core\Config::prependToURL() ?>/game/list">Games</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php \App\Core\Config::prependToURL() ?>/genre/list">Genres</a>
+                    <a class="nav-link" href="<?php echo \App\Core\Config::prependToURL() ?>/genre/list">Genres</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php \App\Core\Config::prependToURL() ?>/user/list">Users</a>
+                    <a class="nav-link" href="<?php echo \App\Core\Config::prependToURL() ?>/user/list">Users</a>
                 </li>
             <?php endif ?>
         </ul>
@@ -45,17 +45,17 @@
                     Currently logged in as: <?php echo htmlspecialchars($this->session->getCurrentUser()->getFirstname()) . ' ' . htmlspecialchars($this->session->getCurrentUser()->getLastname()) ?>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href='<?php \App\Core\Config::prependToURL() ?>/user/edit/<?php echo $this->session->user_id?>'>Edit profile</a>
+                    <a class="nav-link" href='<?php echo \App\Core\Config::prependToURL() ?>/user/edit/<?php echo $this->session->user_id?>'>Edit profile</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php \App\Core\Config::prependToURL() ?>/user/logout">Logout</a>
+                    <a class="nav-link" href="<?php echo \App\Core\Config::prependToURL() ?>/user/logout">Logout</a>
                 </li>
             <?php else: ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php \App\Core\Config::prependToURL() ?>/user/register">Register</a>
+                    <a class="nav-link" href="<?php echo \App\Core\Config::prependToURL() ?>/user/register">Register</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php \App\Core\Config::prependToURL() ?>/user/login">Login</a>
+                    <a class="nav-link" href="<?php echo \App\Core\Config::prependToURL() ?>/user/login">Login</a>
                 </li>
             <?php endif ?>
         </ul>

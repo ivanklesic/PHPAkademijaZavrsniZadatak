@@ -3,6 +3,7 @@
 
 namespace App\Core\Controller;
 
+use App\Core\Config;
 use App\Core\Request\Request;
 use App\Core\Session;
 use App\Core\View;
@@ -31,7 +32,7 @@ abstract class AbstractController
             }
         }
 
-        header('Location: /');
+        $this->redirectToRoute();
     }
 
     public function isGranted($role)
@@ -48,8 +49,14 @@ abstract class AbstractController
         return false;
     }
 
-    public function redirect($path = '/')
-    {
 
+    public function redirectToRoute($route = '/')
+    {
+        header('Location: ' . Config::prependToURL() . $route);
+    }
+
+    public function redirectBack($route)
+    {
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
     }
 }

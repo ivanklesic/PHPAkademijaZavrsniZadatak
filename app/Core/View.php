@@ -36,5 +36,4 @@ class View
         return $date->format($format);
     }
 
-
 }

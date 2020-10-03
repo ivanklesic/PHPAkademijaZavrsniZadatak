@@ -110,7 +110,7 @@ class ReviewController extends AbstractController
             return;
         }
 
-        if($this->session->getCurrentUser()->getId() !== $review->getUserID())
+        if($this->session->getCurrentUser()->getId() !== $review->userID)
         {
             return;
         }
@@ -145,7 +145,7 @@ class ReviewController extends AbstractController
             return;
         }
 
-        if($this->session->getCurrentUser()->getId() !== $review->getUserID())
+        if($this->session->getCurrentUser()->getId() !== $review->userID)
         {
             return;
         }

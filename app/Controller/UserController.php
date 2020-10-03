@@ -29,8 +29,7 @@ class UserController extends AbstractController
             return;
         }
 
-        $this->view->render('user/login', [
-        ]);
+        $this->view->render('user/login', []);
     }
 
     public function loginPostAction()
@@ -67,13 +66,13 @@ class UserController extends AbstractController
 
         $csrfToken = bin2hex(random_bytes(32));
         $this->session->setCsrfToken($csrfToken);
-        header('Location: /');
+        $this->redirectToRoute();
     }
 
     public function logoutAction()
     {
         $this->session->logout();
-        header('Location: /');
+        $this->redirectToRoute();
     }
 
     public function registerAction()
@@ -81,7 +80,7 @@ class UserController extends AbstractController
         $admin = $this->isGranted('ROLE_ADMIN');
 
         if ($this->session->isLoggedIn() && !$admin) {
-            header('Location: /');
+            $this->redirectToRoute();
         }
 
         $this->view->render('user/register', [
@@ -94,7 +93,7 @@ class UserController extends AbstractController
     {
         $admin = $this->isGranted('ROLE_ADMIN');
         if ($this->session->isLoggedIn() && !$admin) {
-            header('Location: /');
+            $this->redirectToRoute();
         }
 
         $postData = $this->request->getBody();
@@ -150,7 +149,7 @@ class UserController extends AbstractController
         }
 
         $url = $admin ? '/user/list' : '/user/login';
-        header('Location: ' . $url);
+        $this->redirectToRoute($url);
     }
 
     public function editAction($id)
@@ -242,7 +241,7 @@ class UserController extends AbstractController
             }
         }
 
-        header('Location: /');
+        $this->redirectToRoute();
     }
 
     public function deleteAction($id)
@@ -263,7 +262,7 @@ class UserController extends AbstractController
         }
 
         $url = '/user/list/' . $id;
-        header('Location: ' . $url);
+        $this->redirectToRoute($url);
     }
 
     public function restoreAction($id)
@@ -284,7 +283,7 @@ class UserController extends AbstractController
         }
 
         $url = '/user/list/' . $id;
-        header('Location: ' . $url);
+        $this->redirectToRoute($url);
     }
 
     public function listAction()
@@ -349,7 +348,7 @@ class UserController extends AbstractController
         }
 
         $this->session->logout();
-        header('Location: /');
+        $this->redirectToRoute();
     }
 
 }

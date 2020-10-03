@@ -24,7 +24,7 @@
                 <?php echo $review->id ?>
             </td>
             <td>
-                <a href="<?php \App\Core\Config::prependToURL() ?>/review/detail/<?php echo $review->id ?>"><?php echo htmlspecialchars($review->title) ?></a>
+                <a href="<?php echo \App\Core\Config::prependToURL() ?>/review/detail/<?php echo $review->id ?>"><?php echo htmlspecialchars($review->title) ?></a>
             </td>
             <td>
                 <?php echo htmlspecialchars($review->rating) ?>/10
@@ -34,8 +34,8 @@
                     <?php echo $review->game ?>
                 </td>
                 <td>
-                    <a href="<?php \App\Core\Config::prependToURL() ?>/review/edit/<?php echo $review->id ?>">Edit</a> |
-                    <a href="<?php \App\Core\Config::prependToURL() ?>/review/delete/<?php echo $review->id ?>">Delete</a>
+                    <a href="<?php echo \App\Core\Config::prependToURL() ?>/review/edit/<?php echo $review->id ?>">Edit</a> |
+                    <a href="<?php echo \App\Core\Config::prependToURL() ?>/review/delete/<?php echo $review->id ?>">Delete</a>
                 </td>
             <?php else: ?>
                 <td>

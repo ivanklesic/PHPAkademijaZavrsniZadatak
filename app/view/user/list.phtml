@@ -3,7 +3,7 @@
         Users
     </h1>
     <span>
-        <a class="btn btn-success float-right" style="margin:10px 0 10px 10px;" href="<?php \App\Core\Config::prependToURL() ?>/user/register">Add an Admin</a>
+        <a class="btn btn-success float-right" style="margin:10px 0 10px 10px;" href="<?php echo \App\Core\Config::prependToURL() ?>/user/register">Add an Admin</a>
     </span>
 </div>
 <table class="table" id="user-table" style="empty-cells: hide">
@@ -36,9 +36,9 @@
 
             <td>
                 <?php if(!$user->deleted): ?>
-                <a href="<?php \App\Core\Config::prependToURL() ?>/user/delete/<?php echo $user->id ?>">Delete</a>
+                <a href="<?php echo \App\Core\Config::prependToURL() ?>/user/delete/<?php echo $user->id ?>">Delete</a>
                 <?php else: ?>
-                <a href="<?php \App\Core\Config::prependToURL() ?>/user/restore/<?php echo $user->id ?>">Restore</a>
+                <a href="<?php echo \App\Core\Config::prependToURL() ?>/user/restore/<?php echo $user->id ?>">Restore</a>
                 <?php endif; ?>
             </td>
         </tr>
