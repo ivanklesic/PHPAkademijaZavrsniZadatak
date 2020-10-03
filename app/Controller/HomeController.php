@@ -34,7 +34,7 @@ class HomeController extends AbstractController
         else
         {
             $url = '/user/login/';
-            header('Location: ' . $url);
+            $this->redirectToRoute($url);
         }
     }
 }
