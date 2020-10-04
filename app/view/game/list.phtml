@@ -50,7 +50,7 @@
 
         <td>
             <?php foreach($game->genres as $key => $genre):
-                echo $key == array_key_first($game->genres) ? '' : ', ';
+                echo $key == 0 ? '' : ', ';
             echo $genre->name;
             endforeach; ?>
         </td>
