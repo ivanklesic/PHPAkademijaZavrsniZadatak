@@ -28,11 +28,12 @@ class UserResource implements ResourceInterface
         $statement->bindValue('password', password_hash($data['pass'], PASSWORD_DEFAULT));
         $statement->bindValue('imageurl', $data['imageurl'] ?? null);
         $statement->bindValue('roles', $roles);
-        $statement->bindValue('cpufreq', $data['cpufreq'] ?? null);
-        $statement->bindValue('cpucores', $data['cpucores'] ?? null);
-        $statement->bindValue('gpuvram', $data['gpuvram'] ?? null);
-        $statement->bindValue('ram', $data['ram'] ?? null);
-        $statement->bindValue('storagespace', $data['storagespace'] ?? null);
+        $statement->bindValue('cpufreq', $data['cpufreq'] !== "" ? $data['cpufreq'] : 0);
+        $statement->bindValue('cpucores', $data['cpucores'] !== "" ? $data['cpucores'] : 0);
+        $statement->bindValue('gpuvram', $data['gpuvram'] !== "" ? $data['gpuvram'] : 0);
+        $statement->bindValue('ram', $data['ram'] !== "" ? $data['ram'] : 0);
+        $statement->bindValue('storagespace', $data['storagespace'] !== "" ? $data['storagespace'] : 0);
+
 
         return $statement->execute();
     }
@@ -48,11 +49,11 @@ class UserResource implements ResourceInterface
         $statement->bindValue('lastname', $data['lastname']);
         $statement->bindValue('email', $data['email']);
         $statement->bindValue('imageurl', $data['imageurl'] ?? null);
-        $statement->bindValue('cpufreq', $data['cpufreq'] ?? null);
-        $statement->bindValue('cpucores', $data['cpucores'] ?? null);
-        $statement->bindValue('gpuvram', $data['gpuvram'] ?? null);
-        $statement->bindValue('ram', $data['ram'] ?? null);
-        $statement->bindValue('storagespace', $data['storagespace'] ?? null);
+        $statement->bindValue('cpufreq', $data['cpufreq'] !== "" ? $data['cpufreq'] : 0);
+        $statement->bindValue('cpucores', $data['cpucores'] !== "" ? $data['cpucores'] : 0);
+        $statement->bindValue('gpuvram', $data['gpuvram'] !== "" ? $data['gpuvram'] : 0);
+        $statement->bindValue('ram', $data['ram'] !== "" ? $data['ram'] : 0);
+        $statement->bindValue('storagespace', $data['storagespace'] !== "" ? $data['storagespace'] : 0);
         $statement->bindValue('id', $userID);
 
         return $statement->execute();
