@@ -106,8 +106,6 @@ class UserController extends AbstractController
             $this->redirectToRoute();
         }
 
-        var_dump(1);
-
         $postData = $this->request->getBody();
         $email = $postData['email'];
 
@@ -119,7 +117,6 @@ class UserController extends AbstractController
             $this->redirectToRoute('/user/register');
             exit();
         }
-        var_dump(2);
 
         if(!is_dir('upload')){
             mkdir('upload');
@@ -134,14 +131,13 @@ class UserController extends AbstractController
             }
             finfo_close($fileInfo);
         }
-        var_dump(3);
+
 
         $result = $this->userResource->insert($postData, $admin);
 
         if (!$result) {
             return;
         }
-        var_dump(4);
 
         $user = $this->userRepository->findOneBy('email',$email);
 
