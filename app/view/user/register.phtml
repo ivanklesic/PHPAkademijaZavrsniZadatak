@@ -14,7 +14,7 @@
             <input type="email" class="form-control" id="email" name="email" value="<?php if($edit): echo htmlspecialchars($user->email); endif;?>" placeholder="Enter email">
             <?php if(isset($errors['register-email'])):
             foreach($errors['register-email'] as $error):?>
-            <small class="text-danger"><?php echo $error; ?></small>
+            <small class="text-danger"><?php echo $error; ?></small><br>
             <?php endforeach; endif; ?>
         </div>
         <?php if(!$edit): ?>
@@ -23,7 +23,7 @@
             <input type="password" class="form-control" id="pass" name="pass"  placeholder="Password">
             <?php if(isset($errors['register-pass'])):
                 foreach($errors['register-pass'] as $error):?>
-                    <small class="text-danger"><?php echo $error; ?></small>
+                    <small class="text-danger"><?php echo $error; ?></small><br>
                 <?php endforeach; endif; ?>
         </div>
         <div class="form-group">
@@ -31,7 +31,7 @@
             <input type="password" class="form-control" id="pass-r" name="pass-r" placeholder="Repeat Password">
             <?php if(isset($errors['register-pass-r'])):
                 foreach($errors['register-pass-r'] as $error):?>
-                    <small class="text-danger"><?php echo $error; ?></small>
+                    <small class="text-danger"><?php echo $error; ?></small><br>
                 <?php endforeach; endif; ?>
         </div>
         <?php endif; ?>
@@ -42,7 +42,7 @@
                 <input type="text" class="form-control" id="firstname" name="firstname" value="<?php if($edit): echo htmlspecialchars($user->firstname); endif;?>" placeholder="First name">
                 <?php if(isset($errors['register-firstname'])):
                     foreach($errors['register-firstname'] as $error):?>
-                    <small class="text-danger"><?php echo $error; ?></small>
+                    <small class="text-danger"><?php echo $error; ?></small><br>
                     <?php endforeach; endif; ?>
             </div>
             <div class="col">
@@ -50,7 +50,7 @@
                 <input type="text" class="form-control" id="lastname" name="lastname" value="<?php if($edit): echo htmlspecialchars($user->lastname); endif;?>" placeholder="Last name">
                 <?php if(isset($errors['register-lastname'])):
                     foreach($errors['register-lastname'] as $error):?>
-                        <small class="text-danger"><?php echo $error; ?></small>
+                        <small class="text-danger"><?php echo $error; ?></small><br>
                     <?php endforeach; endif; ?>
             </div>
         </div>
@@ -79,7 +79,7 @@
                 <input type="number" class="form-control" step=".1" id="cpufreq" name="cpufreq" value="<?php if($edit): echo htmlspecialchars($user->cpufreq) ?? null; endif;?>"  placeholder="CPU frequency in GHz">
                 <?php if(isset($errors['register-cpufreq'])):
                     foreach($errors['register-cpufreq'] as $error):?>
-                        <small class="text-danger"><?php echo $error; ?></small>
+                        <small class="text-danger"><?php echo $error; ?></small><br>
                     <?php endforeach; endif; ?>
             </div>
             <div class="col">
@@ -87,7 +87,7 @@
                 <input type="number" class="form-control" id="cpucores" name="cpucores" value="<?php if($edit): echo htmlspecialchars($user->cpucores) ?? null; endif;?>" placeholder="Number of CPU cores">
                 <?php if(isset($errors['register-cpucores'])):
                     foreach($errors['register-cpucores'] as $error):?>
-                        <small class="text-danger"><?php echo $error; ?></small>
+                        <small class="text-danger"><?php echo $error; ?></small><br>
                     <?php endforeach; endif; ?>
             </div>
         </div>
@@ -96,7 +96,7 @@
             <input type="number" class="form-control" id="gpuvram" name="gpuvram" value="<?php if($edit): echo htmlspecialchars($user->gpuvram) ?? null; endif;?>" placeholder="GPU Video RAM in GB">
             <?php if(isset($errors['register-gpuvram'])):
                 foreach($errors['register-gpuvram'] as $error):?>
-                    <small class="text-danger"><?php echo $error; ?></small>
+                    <small class="text-danger"><?php echo $error; ?></small><br>
                 <?php endforeach; endif; ?>
         </div>
         <div class="form-group">
@@ -104,7 +104,7 @@
             <input type="number" class="form-control" id="ram" name="ram" value="<?php if($edit): echo htmlspecialchars($user->ram) ?? null; endif;?>" placeholder="RAM in GB">
             <?php if(isset($errors['register-ram'])):
                 foreach($errors['register-ram'] as $error):?>
-                    <small class="text-danger"><?php echo $error; ?></small>
+                    <small class="text-danger"><?php echo $error; ?></small><br>
                 <?php endforeach; endif; ?>
         </div>
         <div class="form-group">
@@ -112,7 +112,7 @@
             <input type="number" class="form-control" id="storagespace" value="<?php if($edit): echo htmlspecialchars($user->storagespace) ?? null; endif;?>" name="storagespace" placeholder="Storage space in GB">
             <?php if(isset($errors['register-storagespace'])):
                 foreach($errors['register-storagespace'] as $error):?>
-                    <small class="text-danger"><?php echo $error; ?></small>
+                    <small class="text-danger"><?php echo $error; ?></small><br>
                 <?php endforeach; endif; ?>
         </div>
 

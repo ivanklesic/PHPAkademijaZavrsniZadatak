@@ -34,7 +34,6 @@ class SpecValidator extends AbstractValidator
 
         foreach($data as $key => $value)
         {
-
             switch($key)
             {
                 case 'cpufreq':

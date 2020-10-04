@@ -52,11 +52,6 @@ class UserController extends AbstractController
 
         $user =  $this->userRepository->findOneBy('email', $postData['email'], true);
 
-        if(!$user)
-        {
-            return;
-        }
-
         $errors = $this->userValidator->validateLogin($postData, $user);
 
         if(!empty($errors))
@@ -359,5 +354,6 @@ class UserController extends AbstractController
         $this->session->logout();
         $this->redirectToRoute();
     }
+
 
 }

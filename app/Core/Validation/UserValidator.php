@@ -17,15 +17,21 @@ class UserValidator extends AbstractValidator
 
     public function validateRegister($data, $type = null)
     {
-        if(!isset($data['email']))
+        $email = $data['email'];
+        $pass = $data['pass'];
+        $passRepeat = $data['pass-r'];
+        $firstname = $data['firstname'];
+        $lastname = $data['lastname'];
+
+        if(!isset($email) || empty($email) || ctype_space($email))
             $this->errors['register-email'][]= 'Email field is empty';
-        if($type == 'register' && !isset($data['pass']))
+        if($type == 'register' && (!isset($pass) || empty($pass) || ctype_space($pass)))
             $this->errors['register-pass'][]= 'Password field is empty';
-        if($type == 'register' && !isset($data['pass-r']))
+        if($type == 'register' && (!isset($passRepeat) || empty($passRepeat) || ctype_space($passRepeat)))
             $this->errors['register-pass-r'][]= 'Repeat password field is empty';
-        if(!isset($data['firstname']) || empty($data['firstname']) || ctype_space($data['firstname']))
+        if(!isset($firstname) || empty($firstname) || ctype_space($firstname))
             $this->errors['register-firstname'][]= 'First name field is empty';
-        if(!isset($data['lastname']) || empty($data['lastname']) || ctype_space($data['lastname']))
+        if(!isset($lastname) || empty($lastname) || ctype_space($lastname))
             $this->errors['register-lastname'][]= 'Last name field is empty';
 
         foreach($data as $key => $value)
@@ -60,37 +66,53 @@ class UserValidator extends AbstractValidator
 
     public function validateLogin($data, $user)
     {
-        if(!isset($data['email']))
+        $email = $data['email'];
+        $pass = $data['pass'];
+
+        if(!isset($email) || empty($email) || ctype_space($email))
             $this->errors['login-email'][]= 'Email field is empty';
-        if(!isset($data['pass']))
+        if(!isset($pass) || empty($pass) || ctype_space($pass))
             $this->errors['login-pass'][]= 'Password field is empty';
 
-        foreach($data as $key => $value)
+        if(!$user)
         {
-            switch($key)
+            $this->errors['login-email'][]= 'Invalid credentials';
+            $this->errors['login-pass'][]= 'Invalid credentials';
+        }
+        else{
+            foreach($data as $key => $value)
             {
-                case 'email':
-                    if ($user->deleted)
-                        $this->errors['login-'.$key][]= 'This account is deleted';
-                    break;
-                case 'pass':
-                    if (!password_verify($value, $user->getPassword()))
-                        $this->errors['login-'.$key][]= 'Wrong password';
-                    break;
+                switch($key)
+                {
+                    case 'email':
+                        if ($user->deleted)
+                            $this->errors['login-'.$key][]= 'This account is deleted';
+                        break;
+                    case 'pass':
+                        if (!password_verify($value, $user->getPassword()))
+                        {
+                            $this->errors['login-email'][]= 'Invalid credentials';
+                            $this->errors['login-pass'][]= 'Invalid credentials';
+                        }
+                        break;
+                }
             }
         }
-
 
         return $this->errors;
     }
 
     public function validateReset($data, $user)
     {
-        if(!isset($data['pass-c']))
+        $passCurrent = $data['pass-c'];
+        $pass = $data['pass-c'];
+        $passRepeat = $data['pass-c'];
+
+        if(!isset($passCurrent)  || empty($passCurrent) || ctype_space($passCurrent))
             $this->errors['reset-pass-c'][]= 'Current password field is empty';
-        if(!isset($data['pass']))
+        if(!isset($pass) || empty($pass) || ctype_space($pass))
             $this->errors['reset-pass'][]= 'Password field is empty';
-        if(!isset($data['pass-r']))
+        if(!isset($passRepeat) || empty($passRepeat) || ctype_space($passRepeat))
             $this->errors['reset-pass-r'][]= 'Repeat password field is empty';
 
 
