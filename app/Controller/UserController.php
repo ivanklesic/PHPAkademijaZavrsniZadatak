@@ -3,9 +3,10 @@
 
 namespace App\Controller;
 
-
 use App\Model\User;
 use App\Model\Genre;
+use App\Core\Validation\UserValidator;
+use App\Core\Validation\SpecValidator;
 
 use App\Core\Controller\AbstractController;
 
@@ -14,52 +15,55 @@ class UserController extends AbstractController
     private $userRepository;
     private $genreRepository;
     private $userResource;
+    private $userValidator;
+    private $specValidator;
 
     public function __construct()
     {
         $this->userRepository = new User\UserRepository();
         $this->genreRepository = new Genre\GenreRepository();
         $this->userResource = new User\UserResource();
+        $this->userValidator = new UserValidator();
+        $this->specValidator = new SpecValidator();
         parent::__construct();
     }
 
     public function loginAction()
     {
         if ($this->session->isLoggedIn()) {
-            return;
+            $this->session->logout();
         }
 
-        $this->view->render('user/login', []);
+        $errors = $this->session->errors;
+        unset($this->session->errors);
+
+        $this->view->render('user/login', [
+            'errors' => $errors
+        ]);
     }
 
     public function loginPostAction()
     {
         if ($this->session->isLoggedIn()) {
-            return;
+            $this->session->logout();
         }
 
         $postData = $this->request->getBody();
-        $email = $postData['email'] ?? null;
-        $password = $postData['pass'] ?? null;
 
-        if (!$email || !$password) {
+        $user =  $this->userRepository->findOneBy('email', $postData['email'], true);
+
+        if(!$user)
+        {
             return;
         }
 
-        $user =  $this->userRepository->findOneBy('email', $email);
+        $errors = $this->userValidator->validateLogin($postData, $user);
 
-        if (!$user) {
-            return;
-        }
-
-        if ($user->deleted) {
-            return;
-        }
-
-        $hash = $user->getPassword();
-
-        if (!password_verify($password, $hash)) {
-            return;
+        if(!empty($errors))
+        {
+            $this->session->setErrors($errors);
+            $this->redirectToRoute('/user/login');
+            exit();
         }
 
         $this->session->setUser($user);
@@ -83,36 +87,35 @@ class UserController extends AbstractController
             $this->redirectToRoute();
         }
 
+        $errors = $this->session->errors;
+        unset($this->session->errors);
+
+
         $this->view->render('user/register', [
             'genres' => $this->genreRepository->getList(),
-            'edit' => false
+            'edit' => false,
+            'errors' => $errors
         ]);
     }
 
     public function registerPostAction()
     {
         $admin = $this->isGranted('ROLE_ADMIN');
+
         if ($this->session->isLoggedIn() && !$admin) {
             $this->redirectToRoute();
         }
 
         $postData = $this->request->getBody();
         $email = $postData['email'];
-        $firstname = $postData['firstname'];
-        $lastname = $postData['lastname'];
-        $password = $postData['pass'];
-        $password2 = $postData['pass-r'];
 
-        if (!$email || !$firstname || !$lastname || !$password) {
-            return;
-        }
+        $errors = array_merge($this->userValidator->validateRegister($postData, 'register'), $this->specValidator->validateRegister($postData));
 
-        if ($password != $password2) {
-            return;
-        }
-
-        if($this->userRepository->propertyExists('email', $email)) {
-            return;
+        if(!empty($errors))
+        {
+            $this->session->setErrors($errors);
+            $this->redirectToRoute('/user/register');
+            exit();
         }
 
         if(!is_dir('upload')){
@@ -171,11 +174,15 @@ class UserController extends AbstractController
             return;
         }
 
+        $errors = $this->session->errors;
+        unset($this->session->errors);
+
         $this->view->render('user/register', [
             'user' => $user,
             'edit' => true,
             'genres' => $this->genreRepository->getList(),
-            'userGenres' => $this->userRepository->findGenreIDs($user->getId())
+            'userGenres' => $this->userRepository->findGenreIDs($user->getId()),
+            'errors' => $errors
         ]);
     }
 
@@ -200,15 +207,17 @@ class UserController extends AbstractController
 
         $postData = $this->request->getBody();
         $email = $postData['email'];
-        $firstname = $postData['firstname'];
-        $lastname = $postData['lastname'];
 
-        if (!$email || !$firstname || !$lastname)
+        $errors = array_merge($this->userValidator->validateRegister($postData), $this->specValidator->validateRegister($postData));
+
+        if(!empty($errors))
         {
-            return;
+            $this->session->setErrors($errors);
+            $this->redirectToRoute('/user/edit/' . $id);
+            exit();
         }
 
-        if(isset($_FILES['profileimg'])){
+        if(isset($_FILES['profileimg']) && $_FILES['profileimg']['name'] !== ""){
             if($user->getImageUrl())
             {
                 unlink('upload/' . $user->getImageUrl());
@@ -308,8 +317,12 @@ class UserController extends AbstractController
             return;
         }
 
+        $errors = $this->session->errors;
+        unset($this->session->errors);
+
         $this->view->render('user/reset', [
-            'user' => $user
+            'user' => $user,
+            'errors' => $errors
         ]);
     }
 
@@ -318,13 +331,7 @@ class UserController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         $postData = $this->request->getBody();
-        $passwordCurrent = $postData['pass-c'];
         $passwordNew = $postData['pass'];
-        $passwordNew2 = $postData['pass-r'];
-
-        if (!$passwordCurrent || !$passwordNew || !$passwordNew2) {
-            return;
-        }
 
         $user = $this->userRepository->findOneBy('id',$id);
 
@@ -333,12 +340,13 @@ class UserController extends AbstractController
             return;
         }
 
-        if (!password_verify($passwordCurrent, $user->password)) {
-            return;
-        }
+        $errors = $this->userValidator->validateReset($postData, $user);
 
-        if ($passwordNew != $passwordNew2) {
-            return;
+        if(!empty($errors))
+        {
+            $this->session->setErrors($errors);
+            $this->redirectToRoute('/user/reset/' . $id);
+            exit();
         }
 
         $result = $this->userResource->resetPassword($id, $passwordNew);

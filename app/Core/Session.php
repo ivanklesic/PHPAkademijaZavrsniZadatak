@@ -25,6 +25,11 @@ class Session extends DataObject
         $_SESSION[$key] = $value;
     }
 
+    public function __unset($key)
+    {
+        parent::__unset($key);
+        unset($_SESSION[$key]);
+    }
 
     public static function getInstance()
     {

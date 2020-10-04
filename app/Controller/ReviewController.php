@@ -6,18 +6,21 @@ namespace App\Controller;
 use App\Core\Controller\AbstractController;
 use App\Model\Review;
 use App\Model\Game;
+use App\Core\Validation\ReviewValidator;
 
 class ReviewController extends AbstractController
 {
     private $reviewRepository;
     private $gameRepository;
     private $reviewResource;
+    private $reviewValidator;
 
     public function __construct()
     {
         $this->reviewRepository = new Review\ReviewRepository();
         $this->gameRepository = new Game\GameRepository();
         $this->reviewResource = new Review\ReviewResource();
+        $this->reviewValidator = new ReviewValidator();
         parent::__construct();
     }
 
@@ -32,17 +35,26 @@ class ReviewController extends AbstractController
             return;
         }
 
+        if($game->deleted)
+        {
+            return;
+        }
+
         $userID = $this->session->getCurrentUser()->id;
 
         $review = $this->reviewRepository->findOneByGameAndUser($gameID, $userID);
 
         if($review) {
-            header('Location: /review/edit/' . $review->id);
+            $this->redirectToRoute('/review/edit/' . $review->id);
         }
+
+        $errors = $this->session->errors;
+        unset($this->session->errors);
 
         $this->view->render('review/create', [
             'game' => $game,
-            'edit' => false
+            'edit' => false,
+            'errors' => $errors
         ]);
     }
 
@@ -53,18 +65,21 @@ class ReviewController extends AbstractController
         $postData = $this->request->getBody();
 
         $userID = $this->session->getCurrentUser()->id;
-        $postData['userid'] = $userID;
-        $postData['gameid'] = $gameID;
-        $rating = $postData['rating'];
-        $title = $postData['title'];
-        $reviewtext = $postData['reviewtext'];
 
-        if (!$userID || !$gameID || !$rating || !$title || !$reviewtext) {
+        if (!$userID || !$gameID) {
             return;
         }
 
-        if($this->reviewRepository->findOneByGameAndUser($gameID, $userID)) {
-            return;
+        $postData['userid'] = $userID;
+        $postData['gameid'] = $gameID;
+
+        $errors = $this->reviewValidator->validateForm($postData);
+
+        if(!empty($errors))
+        {
+            $this->session->setErrors($errors);
+            $this->redirectToRoute('/review/create/' . $gameID);
+            exit();
         }
 
         $result = $this->reviewResource->insert($postData);
@@ -74,7 +89,7 @@ class ReviewController extends AbstractController
         }
 
         $url = '/review/list/' . $gameID;
-        header('Location: ' . $url);
+        $this->redirectToRoute($url);
     }
 
     public function editAction($id)
@@ -93,9 +108,13 @@ class ReviewController extends AbstractController
             return;
         }
 
+        $errors = $this->session->errors;
+        unset($this->session->errors);
+
         $this->view->render('review/create', [
             'review' => $review,
-            'edit' => true
+            'edit' => true,
+            'errors' => $errors
         ]);
     }
 
@@ -116,12 +135,14 @@ class ReviewController extends AbstractController
         }
 
         $postData = $this->request->getBody();
-        $rating = $postData['rating'];
-        $title = $postData['title'];
-        $reviewtext = $postData['reviewtext'];
 
-        if (!$rating || !$title || !$reviewtext) {
-            return;
+        $errors = $this->reviewValidator->validateForm($postData);
+
+        if(!empty($errors))
+        {
+            $this->session->setErrors($errors);
+            $this->redirectToRoute('/review/edit/' . $id);
+            exit();
         }
 
         $result = $this->reviewResource->save($id, $postData);
@@ -131,7 +152,7 @@ class ReviewController extends AbstractController
         }
 
         $url = '/review/detail/' . $id;
-        header('Location: ' . $url);
+        $this->redirectToRoute($url);
     }
 
     public function deleteAction($id)
@@ -156,7 +177,7 @@ class ReviewController extends AbstractController
             return;
         }
 
-        header('Location: /');
+        $this->redirectToRoute();
     }
 
     public function detailAction($id)

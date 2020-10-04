@@ -16,7 +16,7 @@
                     <div class="card h-100">
                         <div class="card-body">
                             <h4 class="card-title">
-                                <a href="<?php echo \App\Core\Config::prependToURL() ?>/game/detail/<?php echo $game->id ?>"><?php echo htmlspecialchars($game->name) ?></a>
+                                <?php echo htmlspecialchars($game->name) ?>
                             </h4>
                             <h6>Release date: <?php echo $this->formatDate($game->releasedate, 'd.m.Y.') ?></h6>
                             Average rating: <?php if($game->totalratingssum && $game->totalratingscount): {echo $game->totalratingssum/$game->totalratingscount;} else: {echo 'N/A';} endif;?>

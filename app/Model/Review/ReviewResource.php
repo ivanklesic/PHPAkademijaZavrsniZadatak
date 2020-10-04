@@ -29,11 +29,12 @@ class ReviewResource implements ResourceInterface
     {
         $db = Database::getInstance();
         $statement = $db->prepare(
-            'UPDATE review SET rating = (:rating), title = (:title), reviewtext = (:reviewtext)'
+            'UPDATE review SET rating = (:rating), title = (:title), reviewtext = (:reviewtext) WHERE id = (:id)'
         );
         $statement->bindValue('rating', $data['rating']);
         $statement->bindValue('title', $data['title']);
         $statement->bindValue('reviewtext', $data['reviewtext']);
+        $statement->bindValue('id', $id);
 
         return $statement->execute();
     }

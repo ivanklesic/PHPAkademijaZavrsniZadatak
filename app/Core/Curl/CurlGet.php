@@ -24,8 +24,8 @@ class CurlGet
         curl_setopt($ch, \CURLOPT_RETURNTRANSFER, true);
 
         $response = curl_exec($ch);
-        $error    = curl_error($ch);
-        $errno    = curl_errno($ch);
+        $error = curl_error($ch);
+        $errno = curl_errno($ch);
 
         if (is_resource($ch)) {
             curl_close($ch);

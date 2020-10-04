@@ -13,12 +13,15 @@ abstract class AbstractController
     protected $view;
     protected $session;
     protected $request;
+    protected $errors;
+
 
     public function __construct()
     {
         $this->view = new View();
         $this->session = Session::getInstance();
         $this->request = new Request();
+        $this->errors = [];
     }
 
     public function denyAccessUnlessGranted($role)
@@ -49,14 +52,9 @@ abstract class AbstractController
         return false;
     }
 
-
     public function redirectToRoute($route = '/')
     {
-        header('Location: ' . Config::prependToURL() . $route);
+        header('Location: '  . Config::prependToURL() . $route);
     }
 
-    public function redirectBack($route)
-    {
-        header('Location: ' . $_SERVER['HTTP_REFERER']);
-    }
 }

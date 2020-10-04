@@ -5,10 +5,18 @@
         <div class="form-group">
             <label for="name">Name</label>
             <input type="text" class="form-control" id="name" name="name" value="<?php if($edit): echo $game->name; endif;?>" placeholder="Name">
+            <?php if(isset($errors['game-name'])):
+                foreach($errors['game-name'] as $error):?>
+                    <small class="text-danger"><?php echo $error; ?></small>
+                <?php endforeach; endif; ?>
         </div>
         <div class="form-group">
             <label for="releasedate">Release date</label>
             <input type="date" class="form-control" id="releasedate" name="releasedate" value="<?php if($edit): echo $game->releasedate; endif;?>" placeholder="Release date">
+            <?php if(isset($errors['game-releasedate'])):
+                foreach($errors['game-releasedate'] as $error):?>
+                    <small class="text-danger"><?php echo $error; ?></small>
+                <?php endforeach; endif; ?>
         </div>
         <h6>Select one or more genres:</h6>
         <?php foreach($genres as $genre): ?>
@@ -18,29 +26,53 @@
                     <?php echo $genre->name ?>
                 </label>
             </div>
-        <?php endforeach; ?>
+            <?php endforeach; ?>
+                <?php if(isset($errors['game-genres'])):
+                foreach($errors['game-genres'] as $error):?>
+                    <small class="text-danger"><?php echo $error; ?></small>
+                <?php endforeach; endif; ?>
         <h6>Hardware requirements</h6>
         <div class="row">
             <div class="col">
                 <label for="cpufreq">CPU frequency (GHz)</label>
                 <input type="number" class="form-control" step=".1" id="cpufreq" name="cpufreq" value="<?php if($edit): echo $game->cpufreq; endif;?>" placeholder="CPU frequency (GHz)">
+                <?php if(isset($errors['register-cpufreq'])):
+                    foreach($errors['register-cpufreq'] as $error):?>
+                        <small class="text-danger"><?php echo $error; ?></small>
+                    <?php endforeach; endif; ?>
             </div>
             <div class="col">
                 <label for="cpucores">Number of CPU cores</label>
                 <input type="number" class="form-control" id="cpucores" name="cpucores" value="<?php if($edit): echo $game->cpucores; endif;?>" placeholder="Number of CPU cores">
+                <?php if(isset($errors['register-cpucores'])):
+                    foreach($errors['register-cpucores'] as $error):?>
+                        <small class="text-danger"><?php echo $error; ?></small>
+                    <?php endforeach; endif; ?>
             </div>
         </div>
         <div class="form-group">
             <label for="gpuvram">GPU Video RAM (GB)</label>
             <input type="number" class="form-control" id="gpuvram" name="gpuvram" value="<?php if($edit): echo $game->gpuvram; endif;?>" placeholder="GPU Video RAM (GB)">
+            <?php if(isset($errors['register-gpuvram'])):
+                foreach($errors['register-gpuvram'] as $error):?>
+                    <small class="text-danger"><?php echo $error; ?></small>
+                <?php endforeach; endif; ?>
         </div>
         <div class="form-group">
             <label for="ram">RAM (GB)</label>
             <input type="number" class="form-control" id="ram" name="ram" value="<?php if($edit): echo $game->ram; endif;?>" placeholder="RAM (GB)">
+            <?php if(isset($errors['register-ram'])):
+                foreach($errors['register-ram'] as $error):?>
+                    <small class="text-danger"><?php echo $error; ?></small>
+                <?php endforeach; endif; ?>
         </div>
         <div class="form-group">
             <label for="storagespace">Storage space (GB)</label>
             <input type="number" class="form-control" id="storagespace" name="storagespace" value="<?php if($edit): echo $game->storagespace; endif;?>" placeholder="Storage space (GB)">
+            <?php if(isset($errors['register-storagespace'])):
+                foreach($errors['register-storagespace'] as $error):?>
+                    <small class="text-danger"><?php echo $error; ?></small>
+                <?php endforeach; endif; ?>
         </div>
 
         <button type="submit" class="btn btn-primary">Submit</button>

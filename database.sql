@@ -66,7 +66,7 @@ create table review(
                          userID int not null,
                          gameID int not null,
                          rating int not null,
-                         title varchar(255) not null,
+                         title varchar(100) not null,
                          reviewtext text not null,
                          FOREIGN KEY (gameID) REFERENCES game(id)
                              on delete restrict,

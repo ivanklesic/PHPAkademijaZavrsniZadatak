@@ -109,7 +109,7 @@ class GameRepository implements RepositoryInterface
         $list = [];
         $db = Database::getInstance();
         $statement = $db->prepare(
-            'SELECT game.id, game.name, game.releasedate from game
+            'SELECT game.id, game.name, game.releasedate, game.totalratingssum, game.totalratingscount from game
                         inner join game_genre gg on game.id = gg.gameID
                         inner join genre on genre.id = gg.genreID
                         where genre.id = (:genreID) and game.deleted = 0'
@@ -121,6 +121,8 @@ class GameRepository implements RepositoryInterface
                 'id' => $game->id,
                 'name' => $game->name,
                 'releasedate' => $game->releasedate,
+                'totalratingssum' => $game->totalratingssum,
+                'totalratingscount' => $game->totalratingscount
             ]);
         }
         return $list;

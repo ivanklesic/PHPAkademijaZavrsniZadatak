@@ -12,22 +12,22 @@
     <tbody>
     <tr valign="middle">
         <td>
-            Your PC:
+            <?php if (!empty($error)): echo '<small class="text-danger">' . $error . '</small>'; else:?>Your PC:<?php endif; ?>
         </td>
         <td>
-            <?php echo $user->cpufreq ?>
+            <?php echo $user->cpufreq ?> GHz
         </td>
         <td>
             <?php echo $user->cpucores ?>
         </td>
         <td>
-            <?php echo $user->gpuvram ?>
+            <?php echo $user->gpuvram ?> GB
         </td>
         <td>
-            <?php echo $user->ram ?>
+            <?php echo $user->ram ?> GB
         </td>
         <td>
-            <?php echo $user->storagespace ?>
+            <?php echo $user->storagespace ?> GB
         </td>
     </tr>
     <tr valign="middle">
@@ -35,21 +35,22 @@
             <?php echo $game->name ?> - minimum requirements:
         </td>
         <td>
-            <?php echo $game->cpufreq ?>
+            <?php echo $game->cpufreq ?> GHz
         </td>
         <td>
             <?php echo $game->cpucores ?>
         </td>
         <td>
-            <?php echo $game->gpuvram ?>
+            <?php echo $game->gpuvram ?> GB
         </td>
         <td>
-            <?php echo $game->ram ?>
+            <?php echo $game->ram ?> GB
         </td>
         <td>
-            <?php echo $game->storagespace ?>
+            <?php echo $game->storagespace ?> GB
         </td>
     </tr>
+    <?php if (!empty($error)): ?>
     <tr valign="middle">
         <td>
             Results:
@@ -70,6 +71,7 @@
             <?php if($game->storagespace <= $user->storagespace): ?> <i class="fa fa-check"></i><?php else: ?><i class="fa fa-times"></i><?php endif; ?>
         </td>
     </tr>
+    <?php endif; ?>
 
     </tbody>
 </table>

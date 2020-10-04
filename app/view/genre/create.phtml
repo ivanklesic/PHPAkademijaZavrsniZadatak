@@ -5,6 +5,10 @@
         <div class="form-group">
             <label for="name">Name</label>
             <input type="text" class="form-control" id="name" name="name" value="<?php if($edit): echo htmlspecialchars($genre->name); endif;?>" placeholder="Name">
+            <?php if(isset($errors['genre-name'])):
+                foreach($errors['genre-name'] as $error):?>
+                    <small class="text-danger"><?php echo $error; ?></small>
+                <?php endforeach; endif; ?>
             <br>
         <button type="submit" class="btn btn-primary">Submit</button>
     </div>

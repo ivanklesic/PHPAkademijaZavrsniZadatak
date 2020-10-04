@@ -6,16 +6,19 @@ namespace App\Controller;
 
 use App\Core\Controller\AbstractController;
 use App\Model\Genre;
+use App\Core\Validation\GenreValidator;
 
 class GenreController extends AbstractController
 {
     private $genreRepository;
     private $genreResource;
+    private $genreValidator;
 
     public function __construct()
     {
         $this->genreRepository = new Genre\GenreRepository();
         $this->genreResource = new Genre\GenreResource();
+        $this->genreValidator = new GenreValidator();
         parent::__construct();
     }
 
@@ -23,8 +26,12 @@ class GenreController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
+        $errors = $this->session->errors;
+        unset($this->session->errors);
+
         $this->view->render('genre/create', [
-            'edit' => false
+            'edit' => false,
+            'errors' => $errors
         ]);
     }
 
@@ -33,14 +40,14 @@ class GenreController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $postData = $this->request->getBody();
-        $name = $postData['name'];
 
-        if (!$name) {
-            return;
-        }
+        $errors = $this->genreValidator->validateForm($postData, 'create');
 
-        if($this->genreRepository->propertyExists('name', $name)) {
-            return;
+        if(!empty($errors))
+        {
+            $this->session->setErrors($errors);
+            $this->redirectToRoute('/genre/create');
+            exit();
         }
 
         $result = $this->genreResource->insert($postData);
@@ -50,7 +57,7 @@ class GenreController extends AbstractController
         }
 
         $url = '/genre/list/';
-        header('Location: ' . $url);
+        $this->redirectToRoute($url);
     }
 
     public function editAction($id)
@@ -64,9 +71,13 @@ class GenreController extends AbstractController
             return;
         }
 
+        $errors = $this->session->errors;
+        unset($this->session->errors);
+
         $this->view->render('genre/create', [
             'genre' => $genre,
-            'edit' => true
+            'edit' => true,
+            'errors' => $errors
         ]);
     }
 
@@ -88,6 +99,15 @@ class GenreController extends AbstractController
             return;
         }
 
+        $errors = $this->genreValidator->validateForm($postData);
+
+        if(!empty($errors))
+        {
+            $this->session->setErrors($errors);
+            $this->redirectToRoute('/genre/edit/' . $id);
+            exit();
+        }
+
         $result = $this->genreResource->save($id, $postData);
 
         if (!$result) {
@@ -95,7 +115,7 @@ class GenreController extends AbstractController
         }
 
         $url = '/genre/list/';
-        header('Location: ' . $url);
+        $this->redirectToRoute($url);
     }
 
     public function deleteAction($id)
@@ -116,7 +136,7 @@ class GenreController extends AbstractController
         }
 
         $url = '/genre/list/';
-        header('Location: ' . $url);
+        $this->redirectToRoute($url);
     }
 
     public function restoreAction($id)
@@ -137,7 +157,7 @@ class GenreController extends AbstractController
         }
 
         $url = '/genre/list/';
-        header('Location: ' . $url);
+        $this->redirectToRoute($url);
     }
 
     public function listAction()

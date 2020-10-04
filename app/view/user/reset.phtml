@@ -5,14 +5,26 @@
             <div class="form-group">
                 <label for="pass-c">Current password</label>
                 <input type="password" class="form-control" id="pass-c" name="pass-c"  placeholder="Current password">
+                <?php if(isset($errors['reset-pass-c'])):
+                    foreach($errors['reset-pass-c'] as $error):?>
+                        <small class="text-danger"><?php echo $error; ?></small>
+                    <?php endforeach; endif; ?>
             </div>
             <div class="form-group">
                 <label for="pass">New password</label>
                 <input type="password" class="form-control" id="pass" name="pass"  placeholder="New password">
+                <?php if(isset($errors['reset-pass'])):
+                    foreach($errors['reset-pass'] as $error):?>
+                        <small class="text-danger"><?php echo $error; ?></small>
+                    <?php endforeach; endif; ?>
             </div>
             <div class="form-group">
                 <label for="pass-r">Repeat new password</label>
                 <input type="password" class="form-control" id="pass-r" name="pass-r" placeholder="Repeat new password">
+                <?php if(isset($errors['reset-pass-r'])):
+                    foreach($errors['reset-pass-r'] as $error):?>
+                        <small class="text-danger"><?php echo $error; ?></small>
+                    <?php endforeach; endif; ?>
             </div>
 
         <button type="submit" class="btn btn-primary">Submit</button>

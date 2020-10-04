@@ -5,14 +5,26 @@
         <div class="form-group">
             <label for="title">Title</label>
             <input type="text" class="form-control" id="title" name="title" value="<?php if($edit): echo htmlspecialchars($review->title); endif;?>" placeholder="Title">
+            <?php if(isset($errors['review-title'])):
+                foreach($errors['review-title'] as $error):?>
+                    <small class="text-danger"><?php echo $error; ?></small>
+                <?php endforeach; endif; ?>
         </div>
         <div class="form-group">
             <label for="rating">Rating</label>
             <input type="number" min="1" max="10" class="form-control" id="rating" name="rating" value="<?php if($edit): echo htmlspecialchars($review->rating); endif;?>">
+            <?php if(isset($errors['review-rating'])):
+                foreach($errors['review-rating'] as $error):?>
+                    <small class="text-danger"><?php echo $error; ?></small>
+                <?php endforeach; endif; ?>
         </div>
         <div class="form-group">
             <label for="reviewtext">Text</label>
             <textarea class="form-control" id="reviewtext" name="reviewtext" rows="5" placeholder="Review text"><?php if($edit): echo htmlspecialchars($review->reviewtext); endif;?></textarea>
+            <?php if(isset($errors['review-reviewtext'])):
+                foreach($errors['review-reviewtext'] as $error):?>
+                    <small class="text-danger"><?php echo $error; ?></small>
+                <?php endforeach; endif; ?>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </div>

@@ -4,21 +4,27 @@
 namespace App\Controller;
 
 use App\Core\Controller\AbstractController;
+use App\Core\Validation\SpecValidator;
 use App\Model\Game;
 use App\Model\Genre;
 use App\Core\Curl;
+use App\Core\Validation\GameValidator;
 
 class GameController extends AbstractController
 {
     private $gameRepository;
     private $genreRepository;
     private $gameResource;
+    private $gameValidator;
+    private $specValidator;
 
     public function __construct()
     {
         $this->gameRepository = new Game\GameRepository();
         $this->genreRepository = new Genre\GenreRepository();
         $this->gameResource = new Game\GameResource();
+        $this->gameValidator = new GameValidator();
+        $this->specValidator = new SpecValidator();
         parent::__construct();
     }
 
@@ -26,9 +32,13 @@ class GameController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
+        $errors = $this->session->errors;
+        unset($this->session->errors);
+
         $this->view->render('game/create', [
             'genres' => $this->genreRepository->getList(),
-            'edit' => false
+            'edit' => false,
+            'errors' => $errors
         ]);
     }
 
@@ -38,20 +48,14 @@ class GameController extends AbstractController
 
         $postData = $this->request->getBody();
         $name = $postData['name'];
-        $releaseDate = $postData['releasedate'];
-        $cpuFreq = $postData['cpufreq'];
-        $genres = $postData['genres'];
-        $cpuCores = $postData['cpucores'];
-        $gpuVram = $postData['gpuvram'];
-        $ram = $postData['ram'];
-        $storageSpace = $postData['storagespace'];
 
-        if (!$name || !$releaseDate || !$cpuFreq || !$cpuCores || !$gpuVram || !$ram || !$storageSpace || empty($genres)) {
-            return;
-        }
+        $errors = array_merge($this->gameValidator->validateForm($postData, 'create'), $this->specValidator->validateRegister($postData, 'game'));
 
-        if($this->gameRepository->propertyExists('name', $name)) {
-            return;
+        if(!empty($errors))
+        {
+            $this->session->setErrors($errors);
+            $this->redirectToRoute('/game/create');
+            exit();
         }
 
         $result = $this->gameResource->insert($postData);
@@ -71,7 +75,7 @@ class GameController extends AbstractController
         }
 
         $url = '/game/list/';
-        header('Location: ' . $url);
+        $this->redirectToRoute($url);
     }
 
     public function editAction($id)
@@ -85,11 +89,15 @@ class GameController extends AbstractController
             return;
         }
 
+        $errors = $this->session->errors;
+        unset($this->session->errors);
+
         $this->view->render('game/create', [
             'game' => $game,
             'genres' => $this->genreRepository->getList(),
             'edit' => true,
-            'gameGenres' => $this->gameRepository->findGenreIDs($game->getId())
+            'gameGenres' => $this->gameRepository->findGenreIDs($game->getId()),
+            'errors' => $errors
         ]);
     }
 
@@ -105,17 +113,14 @@ class GameController extends AbstractController
         }
 
         $postData = $this->request->getBody();
-        $name = $postData['name'];
-        $releaseDate = $postData['releasedate'];
-        $genres = $postData['genres'];
-        $cpuFreq = $postData['cpufreq'];
-        $cpuCores = $postData['cpucores'];
-        $gpuVram = $postData['gpuvram'];
-        $ram = $postData['ram'];
-        $storageSpace = $postData['storagespace'];
 
-        if (!$name || !$releaseDate || !$cpuFreq || !$cpuCores || !$gpuVram || !$ram || !$storageSpace || empty($genres)) {
-            return;
+        $errors = array_merge($this->gameValidator->validateForm($postData), $this->specValidator->validateRegister($postData, 'game'));
+
+        if(!empty($errors))
+        {
+            $this->session->setErrors($errors);
+            $this->redirectToRoute('/game/edit/' . $id);
+            exit();
         }
 
         $result = $this->gameResource->save($id, $postData);
@@ -125,6 +130,7 @@ class GameController extends AbstractController
         }
 
         $this->gameResource->resetGenres($game->getId());
+
         foreach($postData['genres'] as $genreID)
         {
             $result = $this->gameResource->insertGenre($genreID, $game->getId());
@@ -134,7 +140,7 @@ class GameController extends AbstractController
         }
 
         $url = '/game/list/';
-        header('Location: ' . $url);
+        $this->redirectToRoute($url);
     }
 
     public function deleteAction($id)
@@ -155,7 +161,7 @@ class GameController extends AbstractController
         }
 
         $url = '/game/list/';
-        header('Location: ' . $url);
+        $this->redirectToRoute($url);
     }
 
     public function restoreAction($id)
@@ -176,7 +182,7 @@ class GameController extends AbstractController
         }
 
         $url = '/game/list/';
-        header('Location: ' . $url);
+        $this->redirectToRoute($url);
     }
 
     public function detailAction($id)
@@ -225,14 +231,17 @@ class GameController extends AbstractController
 
         $user = $this->session->getCurrentUser();
 
+        $compareError = null;
+
         if(!$user || !$user->cpufreq || !$user->cpucores || !$user->gpuvram || !$user->ram || !$user->storagespace)
         {
-            return;
+            $compareError = 'Your PC specs are not complete';
         }
 
         $this->view->render('game/compare', [
             'game' => $game,
-            'user' => $user
+            'user' => $user,
+            'error' => $compareError
         ]);
     }
 

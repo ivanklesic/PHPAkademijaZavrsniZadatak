@@ -64,7 +64,7 @@ class UserResource implements ResourceInterface
             'UPDATE user SET deleted = (:delete) WHERE id = (:id)'
         );
         $statement->bindValue('id', $userID);
-        $statement->bindValue('deleted', $delete);
+        $statement->bindValue('delete', $delete);
 
         return $statement->execute();
     }
