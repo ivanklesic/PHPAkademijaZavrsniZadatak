@@ -29,11 +29,11 @@ class UserResource implements ResourceInterface
         $statement->bindValue('password', password_hash($data['pass'], PASSWORD_DEFAULT));
         $statement->bindValue('imageurl', $data['imageurl'] ?? null);
         $statement->bindValue('roles', $roles);
-        $statement->bindValue('cpufreq', $data['cpufreq'] ?? 0);
-        $statement->bindValue('cpucores', $data['cpucores'] ?? 0);
-        $statement->bindValue('gpuvram', $data['gpuvram'] ?? 0);
-        $statement->bindValue('ram', $data['ram'] ?? 0);
-        $statement->bindValue('storagespace', $data['storagespace'] ?? 0);
+        $statement->bindValue('cpufreq', !empty($data['cpufreq']) ? $data['cpufreq'] : 0);
+        $statement->bindValue('cpucores', !empty($data['cpucores']) ? $data['cpucores'] : 0);
+        $statement->bindValue('gpuvram', !empty($data['gpuvram']) ? $data['gpuvram'] : 0);
+        $statement->bindValue('ram', !empty($data['ram']) ? $data['ram'] : 0);
+        $statement->bindValue('storagespace', !empty($data['storagespace']) ? $data['storagespace'] : 0);
 
         return $statement->execute();
     }
