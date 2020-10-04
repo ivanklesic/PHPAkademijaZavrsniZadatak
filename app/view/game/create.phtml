@@ -52,7 +52,7 @@
         </div>
         <div class="form-group">
             <label for="gpuvram">GPU Video RAM (GB)</label>
-            <input type="number" class="form-control" id="gpuvram" name="gpuvram" value="<?php if($edit): echo $game->gpuvram; endif;?>" placeholder="GPU Video RAM (GB)">
+            <input type="number" class="form-control" id="gpuvram" step=".1" name="gpuvram" value="<?php if($edit): echo $game->gpuvram; endif;?>" placeholder="GPU Video RAM (GB)">
             <?php if(isset($errors['register-gpuvram'])):
                 foreach($errors['register-gpuvram'] as $error):?>
                     <small class="text-danger"><?php echo $error; ?></small>
@@ -60,7 +60,7 @@
         </div>
         <div class="form-group">
             <label for="ram">RAM (GB)</label>
-            <input type="number" class="form-control" id="ram" name="ram" value="<?php if($edit): echo $game->ram; endif;?>" placeholder="RAM (GB)">
+            <input type="number" class="form-control" id="ram" name="ram" step=".1" value="<?php if($edit): echo $game->ram; endif;?>" placeholder="RAM (GB)">
             <?php if(isset($errors['register-ram'])):
                 foreach($errors['register-ram'] as $error):?>
                     <small class="text-danger"><?php echo $error; ?></small>
@@ -68,7 +68,7 @@
         </div>
         <div class="form-group">
             <label for="storagespace">Storage space (GB)</label>
-            <input type="number" class="form-control" id="storagespace" name="storagespace" value="<?php if($edit): echo $game->storagespace; endif;?>" placeholder="Storage space (GB)">
+            <input type="number" class="form-control" id="storagespace" step=".1" name="storagespace" value="<?php if($edit): echo $game->storagespace; endif;?>" placeholder="Storage space (GB)">
             <?php if(isset($errors['register-storagespace'])):
                 foreach($errors['register-storagespace'] as $error):?>
                     <small class="text-danger"><?php echo $error; ?></small>
