@@ -122,7 +122,7 @@ class UserController extends AbstractController
             mkdir('upload');
         }
 
-        if(isset($_FILES['profileimg'])){
+        if(isset($_FILES['profileimg']) && $_FILES['profileimg']['name'] !== ""){
             $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
             $fileMimeType = finfo_file($fileInfo, $_FILES['profileimg']['tmp_name']);
             if (($fileMimeType == 'image/jpeg') && $_FILES['profileimg']['size'] < 100 * 1024){
