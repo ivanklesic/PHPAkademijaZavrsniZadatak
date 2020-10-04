@@ -140,7 +140,7 @@ class UserController extends AbstractController
 
         $user = $this->userRepository->findOneBy('email',$email);
 
-        if(isset($postData['genres']))
+        if(isset($postData['genres']) && !empty($postData['genres']))
         {
             foreach($postData['genres'] as $genreID)
             {
@@ -239,7 +239,7 @@ class UserController extends AbstractController
 
         $this->userResource->resetGenres($user->getId());
 
-        if(isset($postData['genres']))
+        if(isset($postData['genres'])  && !empty($postData['genres']))
         {
             foreach($postData['genres'] as $genreID)
             {
