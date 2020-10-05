@@ -31,7 +31,7 @@
             </td>
             <?php if(!$game): ?>
                 <td>
-                    <?php echo $review->game ?>
+                    <?php echo htmlspecialchars($review->game) ?>
                 </td>
                 <td>
                     <a href="<?php echo \App\Core\Config::prependToURL() ?>/review/edit/<?php echo $review->id ?>">Edit</a> |
@@ -39,7 +39,7 @@
                 </td>
             <?php else: ?>
                 <td>
-                    <?php echo $review->user ?>
+                    <?php echo htmlspecialchars($review->user) ?>
                 </td>
             <?php endif; ?>
         </tr>

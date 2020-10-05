@@ -1,10 +1,11 @@
 <form action="<?php echo \App\Core\Config::prependToURL(); if($edit): echo '/game/editPost/' . $game->id; else: echo '/game/createPost/'; endif; ?>" method="post">
+    <input type="hidden" is="csrftoken" name="token" value="<?php  ; ?>">
     <div class="container">
         <h1><?php if($edit): echo 'Edit'; else: echo 'Add new game'; endif; ?></h1>
         <h5>Required</h5>
         <div class="form-group">
             <label for="name">Name</label>
-            <input type="text" class="form-control" id="name" name="name" value="<?php if($edit): echo $game->name; endif;?>" placeholder="Name">
+            <input type="text" class="form-control" id="name" name="name" value="<?php if($edit): echo htmlspecialchars($game->name); endif;?>" placeholder="Name">
             <?php if(isset($errors['game-name'])):
                 foreach($errors['game-name'] as $error):?>
                     <small class="text-danger"><?php echo $error; ?></small><br>
@@ -23,7 +24,7 @@
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" name="genres[]" value="<?php echo $genre->id ?>" id="genres[<?php echo $genre->id ?>]" <?php if(isset($gameGenres) && in_array($genre->id, $gameGenres)): echo 'checked'; endif;?>>
                 <label class="form-check-label" for="genres[<?php echo $genre->id ?>]">
-                    <?php echo $genre->name ?>
+                    <?php echo htmlspecialchars($genre->name) ?>
                 </label>
             </div>
             <?php endforeach; ?>

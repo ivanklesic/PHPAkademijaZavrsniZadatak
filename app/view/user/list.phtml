@@ -35,12 +35,10 @@
             </td>
 
             <td>
-                <?php if(!in_array('ROLE_ADMIN', explode(',', $user->roles))): ?>
                 <?php if(!$user->deleted): ?>
                 <a href="<?php echo \App\Core\Config::prependToURL() ?>/user/delete/<?php echo $user->id ?>">Delete</a>
                 <?php else: ?>
                 <a href="<?php echo \App\Core\Config::prependToURL() ?>/user/restore/<?php echo $user->id ?>">Restore</a>
-                <?php endif; ?>
                 <?php endif; ?>
             </td>
         </tr>

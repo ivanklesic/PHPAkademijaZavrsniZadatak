@@ -5,16 +5,16 @@
     <div class="col-lg-10">
 
         <h1><?php echo $review->title ?></h1>
-        <small>A review for <?php echo $review->game ?></small>
+        <small>A review for <?php echo htmlspecialchars($review->game) ?></small>
         <div>
             Rating: <?php echo $review->rating ?> / 10
         </div>
         <br>
         <div>
-            <?php echo $review->reviewtext ?>
+            <?php echo htmlspecialchars($review->reviewtext) ?>
         </div>
         <div>
-            By: <?php echo $review->user ?>
+            By: <?php echo htmlspecialchars($review->user) ?>
         </div>
         <br>
         <?php if($review->image): ?><img height="100px" width="200px" src="<?php echo \App\Core\Config::prependToURL() ?>/upload/<?php echo $review->image ?>"><?php endif; ?>

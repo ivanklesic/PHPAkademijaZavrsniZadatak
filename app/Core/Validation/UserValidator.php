@@ -17,21 +17,15 @@ class UserValidator extends AbstractValidator
 
     public function validateRegister($data, $type = null)
     {
-        $email = $data['email'];
-        $pass = $data['pass'];
-        $passRepeat = $data['pass-r'];
-        $firstname = $data['firstname'];
-        $lastname = $data['lastname'];
-
-        if(!isset($email) || empty($email) || ctype_space($email))
+        if(!isset($data['email']) || empty($data['email']) || ctype_space($data['email']))
             $this->errors['register-email'][]= 'Email field is empty';
-        if($type == 'register' && (!isset($pass) || empty($pass) || ctype_space($pass)))
+        if($type == 'register' && (!isset($data['pass']) || empty($data['pass']) || ctype_space($data['pass'])))
             $this->errors['register-pass'][]= 'Password field is empty';
-        if($type == 'register' && (!isset($passRepeat) || empty($passRepeat) || ctype_space($passRepeat)))
+        if($type == 'register' && (!isset($data['pass-r']) || empty($data['pass-r']) || ctype_space($data['pass-r'])))
             $this->errors['register-pass-r'][]= 'Repeat password field is empty';
-        if(!isset($firstname) || empty($firstname) || ctype_space($firstname))
+        if(!isset($data['firstname']) || empty($data['firstname']) || ctype_space($data['firstname']))
             $this->errors['register-firstname'][]= 'First name field is empty';
-        if(!isset($lastname) || empty($lastname) || ctype_space($lastname))
+        if(!isset($data['lastname']) || empty($data['lastname']) || ctype_space($data['lastname']))
             $this->errors['register-lastname'][]= 'Last name field is empty';
 
         foreach($data as $key => $value)
@@ -66,12 +60,10 @@ class UserValidator extends AbstractValidator
 
     public function validateLogin($data, $user)
     {
-        $email = $data['email'];
-        $pass = $data['pass'];
 
-        if(!isset($email) || empty($email) || ctype_space($email))
+        if(!isset($data['email']) || empty($data['email']) || ctype_space($data['email']))
             $this->errors['login-email'][]= 'Email field is empty';
-        if(!isset($pass) || empty($pass) || ctype_space($pass))
+        if(!isset($data['pass']) || empty($data['pass']) || ctype_space($data['pass']))
             $this->errors['login-pass'][]= 'Password field is empty';
 
         if(!$user)
@@ -104,15 +96,12 @@ class UserValidator extends AbstractValidator
 
     public function validateReset($data, $user)
     {
-        $passCurrent = $data['pass-c'];
-        $pass = $data['pass-c'];
-        $passRepeat = $data['pass-c'];
 
-        if(!isset($passCurrent)  || empty($passCurrent) || ctype_space($passCurrent))
+        if(!isset($data['pass-c'])  || empty($data['pass-c']) || ctype_space($data['pass-c']))
             $this->errors['reset-pass-c'][]= 'Current password field is empty';
-        if(!isset($pass) || empty($pass) || ctype_space($pass))
+        if(!isset($data['pass']) || empty($data['pass']) || ctype_space($data['pass']))
             $this->errors['reset-pass'][]= 'Password field is empty';
-        if(!isset($passRepeat) || empty($passRepeat) || ctype_space($passRepeat))
+        if(!isset($data['pass-r']) || empty($data['pass-r']) || ctype_space($data['pass-r']))
             $this->errors['reset-pass-r'][]= 'Repeat password field is empty';
 
 

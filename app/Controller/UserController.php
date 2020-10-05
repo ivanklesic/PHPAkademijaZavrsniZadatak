@@ -221,8 +221,9 @@ class UserController extends AbstractController
             $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
             $fileMimeType = finfo_file($fileInfo, $_FILES['profileimg']['tmp_name']);
             if (($fileMimeType == 'image/jpeg') && $_FILES['profileimg']['size'] < 100 * 1024){
-                move_uploaded_file($_FILES['profileimg']['tmp_name'], 'upload' . DIRECTORY_SEPARATOR . $email . '.jpeg');
-                $postData['imageurl'] = $email . '.jpeg';
+                $randomName = uniqid('img_', true);
+                move_uploaded_file($_FILES['profileimg']['tmp_name'], 'upload' . DIRECTORY_SEPARATOR . $randomName . '.jpeg');
+                $postData['imageurl'] = $randomName . '.jpeg';
             }
             finfo_close($fileInfo);
         }

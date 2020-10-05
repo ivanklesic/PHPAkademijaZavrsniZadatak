@@ -33,7 +33,7 @@
             <?php echo $game->id ?>
         </td>
         <td>
-            <?php echo $game->name ?>
+            <?php echo htmlspecialchars($game->name) ?>
         </td>
 
         <td>
@@ -51,7 +51,7 @@
         <td>
             <?php foreach($game->genres as $key => $genre):
                 echo $key == 0 ? '' : ', ';
-            echo $genre->name;
+            echo htmlspecialchars($genre->name);
             endforeach; ?>
         </td>
 
